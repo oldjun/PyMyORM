@@ -9,7 +9,7 @@ with open("./README.md", encoding="utf-8") as f:
 setup(
     name="PyMyORM",
     version=version,
-    url='https://github.com/oldjun/pymyorm',
+    url='https://github.com/oldjun/PyMyORM',
     author='JP Chen',
     author_email='oldjun@sina.com',
     description='Pure Python MySQL ORM',
