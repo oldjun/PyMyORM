@@ -21,9 +21,11 @@ This package contains a pure-Python MySQL `Object Relational Mapping` client lib
     * [MariaDB](https://mariadb.org/) >= 10.0
 
 ## <a id=#installation>Installation</a>
+
 Package is uploaded on [PyPI](https://pypi.org/project/PyMyORM/).
 
 You can install it with pip:
+
 ```shell
 $python3 pip install PyMyORM
 ```
@@ -53,6 +55,7 @@ create table `t_user` (
 ```
 
 Model definition models/user.py
+
 ```python
 from pymyorm.model import Model
 
@@ -61,6 +64,7 @@ class User(Model):
 ```
 
 Connect to database
+
 ```python
 from pymyorm.database import Database
 Database().connect(host='127.0.0.1',
@@ -71,6 +75,7 @@ Database().connect(host='127.0.0.1',
                    charset='utf8'
                    )
 ```
+
 ### select
 
 ```python
