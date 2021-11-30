@@ -20,7 +20,7 @@ This package contains a pure-Python MySQL `Object Relational Mapping` client lib
     * [MySQL](https://www.mysql.com/) >= 5.6
     * [MariaDB](https://mariadb.org/) >= 10.0
 
-## <a id=#installation>Installation</a>
+## <a href=#installation>Installation</a>
 
 Package is uploaded on [PyPI](https://pypi.org/project/PyMyORM/).
 
