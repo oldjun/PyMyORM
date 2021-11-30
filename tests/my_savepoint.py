@@ -6,13 +6,32 @@ from models.user import User
 Database().connect(**db)
 
 
-def create_user():
+def main():
     t.begin()
-    create_user_inner('ping')
-    create_user_inner('lucy', False)
-    create_user_inner('lily', False)
-    create_user_inner('jack')
+    create_user('ping')
+    create_user('lucy', False)
+    create_user('lily', False)
+    create_user('jack')
     t.commit()
+
+
+def create_user(name, success=True):
+    try:
+        t.begin()
+        user = User()
+        user.name = name
+        user.save()
+        create_user_inner(f"{name}-inner-001")
+        create_user_inner(f"{name}-inner-002", False)
+        create_user_inner(f"{name}-inner-003", False)
+        create_user_inner(f"{name}-inner-004")
+        if success:
+            t.commit()
+        else:
+            t.rollback()
+    except Exception as e:
+        t.rollback()
+        raise e
 
 
 def create_user_inner(name, success=True):
@@ -21,10 +40,6 @@ def create_user_inner(name, success=True):
         user = User()
         user.name = name
         user.save()
-        create_user_inner_deep(f"{name}-inner-001")
-        create_user_inner_deep(f"{name}-inner-002", False)
-        create_user_inner_deep(f"{name}-inner-003", False)
-        create_user_inner_deep(f"{name}-inner-004")
         if success:
             t.commit()
         else:
@@ -34,19 +49,5 @@ def create_user_inner(name, success=True):
         raise e
 
 
-def create_user_inner_deep(name, success=True):
-    try:
-        t.begin()
-        user = User()
-        user.name = name
-        user.save()
-        if success:
-            t.commit()
-        else:
-            t.rollback()
-    except Exception as e:
-        t.rollback()
-        raise e
-
-
-create_user()
+if __name__ == '__main__':
+    main()

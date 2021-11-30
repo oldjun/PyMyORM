@@ -5,9 +5,8 @@ from models.user import User
 
 Database().connect(**db)
 
-
 def create_user():
-    fp = open('tests/user.txt', 'r')
+    fp = open('user.txt', 'r')
     try:
         User.find().truncate()
         t.begin()
@@ -34,11 +33,17 @@ def update_user():
         t.rollback()
         raise e
 
-try:
-    t.begin()
-    create_user()
-    update_user()
-    t.commit()
-except Exception as e:
-    t.rollback()
-    raise e
+
+def main():
+    try:
+        t.begin()
+        create_user()
+        update_user()
+        t.commit()
+    except Exception as e:
+        t.rollback()
+        raise e
+
+
+if __name__ == '__main__':
+    main()
