@@ -13,7 +13,7 @@ def main():
     AdminRole.find().truncate()
     AdminAuth.find().truncate()
 
-    for name in ['超级管理员', '运营专员', '客服专员']:
+    for name in ['role1', 'role2', 'role3']:
         exists = AdminRole.find().where(name=name).exists()
         if not exists:
             AdminRole(name=name).save()
