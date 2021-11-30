@@ -11,11 +11,7 @@ class Database(Singleton):
         self.__autocommit = True
 
     def __del__(self):
-        if self.__debug:
-            print('mysql connection closed')
-        if self.__conn is not None:
-            self.__conn.close()
-            self.__conn = None
+        self.close()
 
     def connect(self, **config):
         try:
@@ -34,6 +30,13 @@ class Database(Singleton):
             if self.__debug:
                 print('mysql connect failure')
             raise e
+
+    def close(self):
+        if self.__debug:
+            print('mysql connection closed')
+        if self.__conn is not None:
+            self.__conn.close()
+            self.__conn = None
 
     def fetchone(self, sql):
         if self.__debug:
