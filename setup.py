@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 from setuptools import setup, find_packages
 
-version = '1.0.0'
+version = '1.0.1'
 
 with open("./README.md", encoding="utf-8") as f:
     readme = f.read()
@@ -14,9 +14,10 @@ setup(
     author_email='oldjun@sina.com',
     description='Pure Python MySQL ORM',
     long_description=readme,
+    long_description_content_type='text/markdown',
     python_requires=">=3.6",
     install_requires=[
-        'PyMySQL>=1.0.2'
+        'PyMySQL>=0.9.0'
     ],
     license="MIT",
     packages=find_packages(),

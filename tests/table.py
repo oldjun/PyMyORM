@@ -1,5 +1,5 @@
-from demos.config import db
 from pymyorm.database import Database
+from config import db
 
 fp = open('sql/t_user.sql', 'r', encoding='utf-8')
 sql = fp.read()

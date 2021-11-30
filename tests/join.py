@@ -1,5 +1,5 @@
-from demos.config import db
 from pymyorm.database import Database
+from config import db
 
 Database().connect(**db)
 

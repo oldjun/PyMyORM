@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
-from config import db
 from pymyorm.database import Database
-# from models.user import User
-#
-# Database().connect(**db)
+from config import db
+from models.user import User
+
+Database().connect(**db)
 
 
 def main():

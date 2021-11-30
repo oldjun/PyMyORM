@@ -1,8 +1,8 @@
-from demos.config import db
 from pymyorm.database import Database
-from demos.models.admin import Admin
-from demos.models.admin_role import AdminRole
-from demos.models.admin_auth import AdminAuth
+from config import db
+from models.admin import Admin
+from models.admin_role import AdminRole
+from models.admin_auth import AdminAuth
 
 Database().connect(**db)
 

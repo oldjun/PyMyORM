@@ -1,6 +1,6 @@
-from demos.config import db
 from pymyorm.database import Database
-from demos.models.user import User
+from config import db
+from models.user import User
 
 Database().connect(**db)
 
