@@ -1,4 +1,4 @@
-#PyMyORM
+PyMyORM
 ---
 Table of Contents
 
@@ -11,7 +11,7 @@ Table of Contents
 
 This package contains a pure-Python MySQL `Object Relational Mapping` client library.
 
-##<a id=#requirements>Requirements</a>
+## <a href=#requirements>Requirements</a>
 
 * Python:
     *  [CPython](https://www.python.org/): 3.6 or newer
@@ -20,7 +20,7 @@ This package contains a pure-Python MySQL `Object Relational Mapping` client lib
     * [MySQL](https://www.mysql.com/) >= 5.6
     * [MariaDB](https://mariadb.org/) >= 10.0
 
-##<a id=#installation>Installation</a>
+## <a id=#installation>Installation</a>
 Package is uploaded on [PyPI](https://pypi.org/project/PyMyORM/).
 
 You can install it with pip:
@@ -28,10 +28,10 @@ You can install it with pip:
 $python3 pip install PyMyORM
 ```
 
-##<a href=#documentation>Documentation</a>
+## <a href=#documentation>Documentation</a>
 Documentation is coming soon.
 
-##<a href=#example>Example</a>
+## <a href=#example>Example</a>
 
 The following examples make use of a simple table
 
@@ -71,7 +71,7 @@ Database().connect(host='127.0.0.1',
                    charset='utf8'
                    )
 ```
-###select
+### select
 
 ```python
 # case 1
@@ -109,7 +109,7 @@ for one in all:
     print(one)
 ```
 
-###update
+### update
 
 ```python
 # case 1
@@ -126,7 +126,7 @@ from models.user import User
 User.find().where(name='lily').update(money=500, phone='18976642222')
 ```
 
-###insert
+### insert
 
 ```python
 # case 1
@@ -145,7 +145,7 @@ user.money = 100
 user.save()
 ```
 
-###delete
+### delete
 
 ```python
 # case 1
@@ -174,28 +174,28 @@ from models.user import User
 User.find().delete() # delete all users
 ```
 
-###exists
+### exists
 
 ```python
 from models.user import User
 exists = User.find().where(name='ping').exists()
 ```
 
-###count
+### count
 
 ```python
 from models.user import User
 count = User.find().where(status='0').count()
 ```
 
-###min
+### min
 
 ```python
 from models.user import User
 money = User.find().where(status=0).min('money')
 ```
 
-###max
+### max
 
 ```python
 from models.user import User
@@ -203,35 +203,35 @@ money = User.find().where(status=0).max('money')
 print(money)
 ```
 
-###average
+### average
 
 ```python
 from models.user import User
 money = User.find().where(status=0).average('money')
 ```
 
-###scalar
+### scalar
 
 ```python
 from models.user import User
 money = User.find().where(id=1).scalar('money')
 ```
 
-###column
+### column
 
 ```python
 from models.user import User
 names = User.find().column('name')
 ```
 
-###truncate
+### truncate
 
 ```python
 from models.user import User
 User.find().truncate()
 ```
 
-###join
+### join
 
 ```python
 # case 1: inner join
@@ -319,11 +319,11 @@ except Exception as e:
     raise e
 ```
 
-##<a href=#resource>Resource</a>
+## <a href=#resource>Resource</a>
 
 * MySQL Reference Manuals: [https://dev.mysql.com/doc/](https://dev.mysql.com/doc/)
 * PyMySQL: [https://pymysql.readthedocs.io/](https://pymysql.readthedocs.io/)
 
-##<a href=#license>License</a>
+## <a href=#license>License</a>
 
 PyMyORM is released under the MIT License. See LICENSE for more information.
