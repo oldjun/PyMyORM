@@ -4,14 +4,13 @@ from pymyorm.database import Database
 from config import db
 from models.user import User
 
-Database().connect(**db)
-
 
 def main():
-    print(db)
-    # # case 1
-    # one = User.find().where(name='ping').one()
-    # print(one)
+    Database().connect(**db)
+
+    # case 1
+    one = User.find().where(name='ping').one()
+    print(one)
 
     # # case 2
     # one = User.find().select('name').where(name='ping').where(phone='18976641111').one()
