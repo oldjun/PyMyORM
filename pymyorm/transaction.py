@@ -1,3 +1,4 @@
+import uuid
 from pymyorm.database import Database
 
 
@@ -14,10 +15,9 @@ class Transaction(object):
         t = cls()
         # print(Transaction.__is_transaction_begin)
         if Transaction.__is_transaction_begin:
-            num = len(Transaction.__savepoint_list)
-            id = f"sp{num}"
-            Transaction.__savepoint_list.append(id)
-            t.__db.savepoint(id)
+            sp = f"{str(uuid.uuid4())}"
+            Transaction.__savepoint_list.append(sp)
+            t.__db.savepoint(sp)
         else:
             Transaction.__is_transaction_begin = True
             t.__db.begin()
@@ -28,8 +28,8 @@ class Transaction(object):
         t = cls()
         num = len(Transaction.__savepoint_list)
         if num > 0:
-            id = Transaction.__savepoint_list.pop()
-            t.__db.rollback_savepoint(id)
+            sp = Transaction.__savepoint_list.pop()
+            t.__db.rollback_savepoint(sp)
         else:
             t.__db.rollback()
             Transaction.__is_transaction_begin = False
@@ -40,8 +40,9 @@ class Transaction(object):
         t = cls()
         num = len(Transaction.__savepoint_list)
         if num > 0:
-            id = Transaction.__savepoint_list.pop()
-            t.__db.release_savepoint(id)
+            sp = Transaction.__savepoint_list.pop()
+            t.__db.release_savepoint(sp)
         else:
             t.__db.commit()
+            Transaction.__is_transaction_begin = False
         # print(Transaction.__savepoint_list)
