@@ -61,7 +61,7 @@ class Model(object):
             self.__new_fields[self.__class__.primary_key] = last_insert_id
         else:
             update_str = ','.join([f"`{k}`='{v}'" for (k, v) in self.__new_fields.items()])
-            sql = f"update `{self.__class__.tablename}` set {update_str} where `{self.__class__.primary_key}`={self.__old_fields.get(self.__class__.primary_key)}"
+            sql = f"update `{self.__class__.tablename}` set {update_str} where `{self.__class__.primary_key}`='{self.__old_fields.get(self.__class__.primary_key)}'"
             self.__sql = sql
             self.__db.execute(sql)
 
