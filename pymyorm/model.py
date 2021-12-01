@@ -106,7 +106,7 @@ class Model(object):
                     raise Exception('condition in or not in should be a list')
                 v_list = []
                 for v in cond['value']:
-                    v_list.append("'{}'".format(v))
+                    v_list.append(f"'{v}'")
                 cond_list.append(f"{cond['field']} {cond['op']} ({','.join(v_list)})")
         where_sql = ' and '.join(cond_list)
         if where_sql:
