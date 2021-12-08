@@ -324,6 +324,47 @@ except Exception as e:
     raise e
 ```
 
+### threading
+
+By default PyMyORM works at single process & single thread, however when we develop a web application based on flask, we would like to make PyMyORM support multi-threading.
+
+So PyMyORM provide a connection pool component, and it's threadsafety.
+
+In this kind of scenario, we should use ConnectionPool to replace Database, so simple and easy.
+
+```python
+from flask import Flask
+from pymyorm.local import local
+from pymyorm.connection_pool import ConnectionPool
+from models.user import User
+
+app = Flask(__name__)
+
+pool = ConnectionPool()
+local.conn = pool.get()
+
+# start to handle http request
+@app.route('/')
+def index():
+    one = User.find().where(name='ping').one()
+    print(one)
+    return 'index'
+
+@app.route('/hello')
+def hello():
+    one = User.find().where(name='ping').one()
+    print(one)
+    return 'hello'
+# end of handle http request
+
+# don't forget to put connection into pool
+pool.put(local.conn)
+local.conn = None
+```
+
+As the code slice mentioned above, PyMyORM assign one mysql connection for each
+http request, so the mysql transaction will work properly.
+
 ## <a href=#resource>Resource</a>
 
 * MySQL Reference Manuals: [https://dev.mysql.com/doc/](https://dev.mysql.com/doc/)
