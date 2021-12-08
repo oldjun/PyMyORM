@@ -1,4 +1,4 @@
-from pymyorm.database import Database
+from pymyorm.local import local
 
 
 class Model(object):
@@ -6,7 +6,7 @@ class Model(object):
     primary_key = 'id'
 
     def __init__(self, **kwargs) -> None:
-        self.__db = Database()
+        self.__conn = local.conn
         self.__sql = ''
         self.__old_fields = {}
         self.__new_fields = {}
@@ -57,13 +57,13 @@ class Model(object):
                 raise Exception('insert fields is empty')
             sql = f"insert into `{self.__class__.tablename}`({fields}) values({values})"
             self.__sql = sql
-            last_insert_id = self.__db.insert(sql)
+            last_insert_id = self.__conn.insert(sql)
             self.__new_fields[self.__class__.primary_key] = last_insert_id
         else:
             update_str = ','.join([f"`{k}`='{v}'" for (k, v) in self.__new_fields.items()])
             sql = f"update `{self.__class__.tablename}` set {update_str} where `{self.__class__.primary_key}`='{self.__old_fields.get(self.__class__.primary_key)}'"
             self.__sql = sql
-            self.__db.execute(sql)
+            self.__conn.execute(sql)
 
     def sql(self):
         sql = self.__build_select_sql()
@@ -151,7 +151,7 @@ class Model(object):
         sql = self.sql()
 
         one = self.__class__()
-        res = self.__db.fetchone(sql)
+        res = self.__conn.fetchone(sql)
         if res is None:
             return None
         for (k, v) in res.items():
@@ -161,9 +161,8 @@ class Model(object):
     def all(self):
         if self.__class__.tablename is None:
             raise Exception('missing table name')
-
         sql = self.sql()
-        res = self.__db.fetchall(sql)
+        res = self.__conn.fetchall(sql)
         if res is None:
             return []
         all = []
@@ -206,7 +205,6 @@ class Model(object):
     def update(self, **kwargs):
         if self.__class__.tablename is None:
             raise Exception('missing table name')
-
         self.__update.update(kwargs)
         sql = f"update `{self.__class__.tablename}` "
         update_str = ','.join([f"`{k}`='{v}'" for (k, v) in self.__update.items()])
@@ -216,7 +214,7 @@ class Model(object):
         sql += self.__build_where_sql()
         sql += self.__build_other_sql()
         self.__sql = sql.strip()
-        return self.__db.execute(self.__sql)
+        return self.__conn.execute(self.__sql)
 
     def delete(self):
         if self.__class__.tablename is None:
@@ -230,14 +228,14 @@ class Model(object):
             sql += f"where `{self.__class__.primary_key}`='{self.__old_fields.get(self.__class__.primary_key)}'"
 
         self.__sql = sql.strip()
-        return self.__db.execute(self.__sql)
+        return self.__conn.execute(self.__sql)
 
     def truncate(self):
         if self.__class__.tablename is None:
             raise Exception('missing table name')
         sql = f"truncate table `{self.__class__.tablename}`"
         self.__sql = sql.strip()
-        return self.__db.execute(self.__sql)
+        return self.__conn.execute(self.__sql)
 
     def where(self, *args, **kwargs):
         if len(args) > 0:
@@ -261,7 +259,6 @@ class Model(object):
         return self
 
     def order(self, order):
-
         self.__order = order
         return self
 
@@ -292,7 +289,7 @@ class Model(object):
         sql += self.__build_where_sql()
         sql += self.__build_other_sql()
         self.__sql = sql.strip()
-        return self.__db.count(self.__sql)
+        return self.__conn.count(self.__sql)
 
     def min(self, field):
         if self.__class__.tablename is None:
@@ -301,7 +298,7 @@ class Model(object):
         sql += self.__build_where_sql()
         sql += self.__build_other_sql()
         self.__sql = sql.strip()
-        return self.__db.min(self.__sql)
+        return self.__conn.min(self.__sql)
 
     def max(self, field):
         if self.__class__.tablename is None:
@@ -310,7 +307,7 @@ class Model(object):
         sql += self.__build_where_sql()
         sql += self.__build_other_sql()
         self.__sql = sql.strip()
-        return self.__db.max(self.__sql)
+        return self.__conn.max(self.__sql)
 
     def average(self, field):
         if self.__class__.tablename is None:
@@ -319,41 +316,38 @@ class Model(object):
         sql += self.__build_where_sql()
         sql += self.__build_other_sql()
         self.__sql = sql.strip()
-        return self.__db.average(self.__sql)
+        return self.__conn.average(self.__sql)
 
     def exists(self):
         if self.__class__.tablename is None:
             raise('missing table name')
-
         sql = f"select exists(select `{self.__class__.primary_key}` from `{self.__class__.tablename}` "
         sql += self.__build_where_sql()
         sql += self.__build_other_sql()
         sql = sql.strip()
         sql += f")"
         self.__sql = sql
-        return self.__db.exists(self.__sql)
+        return self.__conn.exists(self.__sql)
 
     def column(self, field):
         if self.__class__.tablename is None:
             raise('missing table name')
-
         sql = f"select `{field}` from `{self.__class__.tablename}` "
         sql += self.__build_where_sql()
         sql += self.__build_other_sql()
         self.__sql = sql.strip()
-        result = self.__db.column(self.__sql)
+        result = self.__conn.column(self.__sql)
         return [item[field] for item in result]
 
     def scalar(self, field):
         if self.__class__.tablename is None:
             raise('missing table name')
-
         self.__limit = 1
         sql = f"select `{field}` from `{self.__class__.tablename}` "
         sql += self.__build_where_sql()
         sql += self.__build_other_sql()
         self.__sql = sql.strip()
-        result = self.__db.scalar(self.__sql)
+        result = self.__conn.scalar(self.__sql)
         if result is None:
             return None
         return result[field]

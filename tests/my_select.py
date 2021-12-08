@@ -4,6 +4,7 @@ from models.user import User
 
 
 def main():
+    Database().debug(debug=True)
     Database().connect(**db)
 
     # case 1
@@ -18,9 +19,9 @@ def main():
     # one = User.find().where(name='ping', phone='18976641111').one()
     # print(one)
 
-    # # case 4
-    # one = User.find().where('money', '!=', 200).order('id desc').one()
-    # print(one)
+    # case 4
+    one = User.find().where('money', '!=', 200).order('id desc').one()
+    print(one)
 
     # # case 5
     # all = User.find().where('name', 'not in', ['ping', 'lucy']).all()

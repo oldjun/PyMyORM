@@ -4,6 +4,5 @@ db = {
     'user': 'root',
     'password': 'password',
     'database': 'test',
-    'charset': 'utf8',
-    'debug': True
+    'charset': 'utf8'
 }
