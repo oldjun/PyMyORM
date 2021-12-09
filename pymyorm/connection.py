@@ -38,6 +38,7 @@ class Connection(object):
         try:
             if self.__debug:
                 print(f"sql: {sql}")
+            self.__conn.autocommit(self.__autocommit)
             cursor = self.__conn.cursor()
             cursor.execute(sql)
             result = cursor.fetchone()
@@ -50,6 +51,7 @@ class Connection(object):
         try:
             if self.__debug:
                 print(f"sql: {sql}")
+            self.__conn.autocommit(self.__autocommit)
             cursor = self.__conn.cursor()
             cursor.execute(sql)
             result = cursor.fetchall()
