@@ -348,11 +348,10 @@ pool.debug(debug=True)
 pool.create(**config)
 
 
-# 判断用户是否登录
+# assign one connection to the request
 def assign_connection(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
-        # assign one connection to thread local
         pool = ConnectionPool()
         local.conn = pool.get()
         
