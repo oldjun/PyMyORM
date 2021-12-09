@@ -5,13 +5,12 @@ from pymyorm.local import local
 class Transaction(object):
 
     def __init__(self) -> None:
-        print('trx __init__')
         self.__conn = local.conn
         self.__is_transaction_begin = False
         self.__savepoint_list = []
 
     def __del__(self):
-        print('trx __del__')
+        pass
 
     @staticmethod
     def begin():
