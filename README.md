@@ -324,15 +324,16 @@ except Exception as e:
     raise e
 ```
 
-### threading
+### connection pool
 
-By default PyMyORM works at single process & single thread, however when we develop a web application based on flask, we would like to make PyMyORM support multi-threading.
+By default PyMyORM works at single thread, however when we develop a web application based on flask, we would like to make PyMyORM support multi-threading.
 
 So PyMyORM provide a connection pool component, and it's threadsafety.
 
-In this kind of scenario, we should use ConnectionPool to replace Database, so simple and easy.
+In this kind of scenario, we should use ConnectionPool to replace Database to init mysql connection.
 
 ```python
+import functools
 from flask import Flask
 from pymyorm.local import local
 from pymyorm.connection_pool import ConnectionPool
@@ -340,26 +341,40 @@ from models.user import User
 
 app = Flask(__name__)
 
+config = dict(user=user, port=port, user=user, password=password, database=database)
 pool = ConnectionPool()
-local.conn = pool.get()
+pool.size(size=10)
+pool.debug(debug=True)
+pool.create(**config)
 
-# start to handle http request
+
+# 判断用户是否登录
+def assign_connection(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        # assign one connection to thread local
+        pool = ConnectionPool()
+        local.conn = pool.get()
+        
+        resp = func(*args, **kwargs)
+        # don't forget to put connection into pool
+        pool.put(local.conn)
+        return resp
+    return wrapper
+
 @app.route('/')
+@assign_connection
 def index():
     one = User.find().where(name='ping').one()
     print(one)
     return 'index'
 
 @app.route('/hello')
+@assign_connection
 def hello():
     one = User.find().where(name='ping').one()
     print(one)
     return 'hello'
-# end of handle http request
-
-# don't forget to put connection into pool
-pool.put(local.conn)
-local.conn = None
 ```
 
 As the code slice mentioned above, PyMyORM assign one mysql connection for each
