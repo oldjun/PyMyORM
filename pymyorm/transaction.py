@@ -1,48 +1,58 @@
 import uuid
-from pymyorm.database import Database
+from pymyorm.local import local
 
 
 class Transaction(object):
 
-    __is_transaction_begin = False
-    __savepoint_list = []
-
     def __init__(self) -> None:
-        self.__db = Database()
+        print('trx __init__')
+        self.__conn = local.conn
+        self.__is_transaction_begin = False
+        self.__savepoint_list = []
 
-    @classmethod
-    def begin(cls):
-        t = cls()
+    def __del__(self):
+        print('trx __del__')
+
+    @staticmethod
+    def begin():
+        if not hasattr(local, 'trx'):
+            local.trx = Transaction()
+        t = local.trx
+        print(t)
         # print(Transaction.__is_transaction_begin)
-        if Transaction.__is_transaction_begin:
-            sp = f"{str(uuid.uuid4())}"
-            Transaction.__savepoint_list.append(sp)
-            t.__db.savepoint(sp)
+        if t.__is_transaction_begin:
+            sp = f"`{str(uuid.uuid4().hex)}`"
+            t.__savepoint_list.append(sp)
+            t.__conn.savepoint(sp)
         else:
-            Transaction.__is_transaction_begin = True
-            t.__db.begin()
+            t.__is_transaction_begin = True
+            t.__conn.begin()
         # print(Transaction.__savepoint_list)
 
-    @classmethod
-    def rollback(cls):
-        t = cls()
-        num = len(Transaction.__savepoint_list)
-        if num > 0:
-            sp = Transaction.__savepoint_list.pop()
-            t.__db.rollback_savepoint(sp)
+    @staticmethod
+    def rollback():
+        if not hasattr(local, 'trx'):
+            local.trx = Transaction()
+        t = local.trx
+        print(t)
+        if len(t.__savepoint_list) > 0:
+            sp = t.__savepoint_list.pop()
+            t.__conn.rollback_savepoint(sp)
         else:
-            t.__db.rollback()
-            Transaction.__is_transaction_begin = False
+            t.__conn.rollback()
+            t.__is_transaction_begin = False
         # print(Transaction.__savepoint_list)
 
-    @classmethod
-    def commit(cls):
-        t = cls()
-        num = len(Transaction.__savepoint_list)
-        if num > 0:
-            sp = Transaction.__savepoint_list.pop()
-            t.__db.release_savepoint(sp)
+    @staticmethod
+    def commit():
+        if not hasattr(local, 'trx'):
+            local.trx = Transaction()
+        t = local.trx
+        print(t)
+        if len(t.__savepoint_list) > 0:
+            sp = t.__savepoint_list.pop()
+            t.__conn.release_savepoint(sp)
         else:
-            t.__db.commit()
-            Transaction.__is_transaction_begin = False
+            t.__conn.commit()
+            t.__is_transaction_begin = False
         # print(Transaction.__savepoint_list)

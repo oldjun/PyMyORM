@@ -2,8 +2,12 @@ from pymyorm.database import Database
 from pymyorm.transaction import Transaction as t
 from config import db
 from models.user import User
+from my_trx_func import update_user
 
+
+Database().debug(debug=True)
 Database().connect(**db)
+
 
 def create_user():
     fp = open('user.txt', 'r')
@@ -18,27 +22,18 @@ def create_user():
             model.phone = phone
             model.money = money
             model.save()
+        update_user()
         t.commit()
     except Exception as e:
         t.rollback()
         raise e
     fp.close()
 
-def update_user():
-    try:
-        t.begin()
-        User.find().where(name='ping').update(money=0)
-        t.commit()
-    except Exception as e:
-        t.rollback()
-        raise e
-
 
 def main():
     try:
         t.begin()
         create_user()
-        update_user()
         t.commit()
     except Exception as e:
         t.rollback()
