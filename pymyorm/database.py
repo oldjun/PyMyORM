@@ -8,9 +8,6 @@ class Database(object):
     def __init__(self) -> None:
         self.__debug = False
 
-    def __del__(self):
-        pass
-
     def debug(self, debug=True):
         self.__debug = debug
 

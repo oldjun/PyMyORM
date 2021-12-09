@@ -9,9 +9,6 @@ class Transaction(object):
         self.__is_transaction_begin = False
         self.__savepoint_list = []
 
-    def __del__(self):
-        pass
-
     @staticmethod
     def begin():
         if not hasattr(local, 'trx'):
