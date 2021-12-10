@@ -14,7 +14,7 @@ def main():
     # print(dict(one))
 
     # case 2
-    all = User.find().select('name').all()
+    all = User.find().all()
     tmp = [dict(one) for one in all]
     print(tmp)
 

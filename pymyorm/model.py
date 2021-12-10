@@ -4,6 +4,7 @@ from pymyorm.local import local
 class Model(object):
     tablename = None
     primary_key = 'id'
+    datetime_fields = []
 
     def __init__(self, **kwargs) -> None:
         self.__conn = local.conn
@@ -33,11 +34,15 @@ class Model(object):
 
     def __getattr__(self, name):
         if name in self.__new_fields:
-            return self.__new_fields[name]
+            value = self.__new_fields[name]
         elif name in self.__old_fields:
-            return self.__old_fields[name]
+            value = self.__old_fields[name]
         else:
             raise Exception(f"object has no attribute '{name}'")
+        if name in self.datetime_fields:
+            return value.strftime('%Y-%m-%d %H:%M:%S')
+        else:
+            return value
 
     def __getitem__(self, item):
         return getattr(self, item)
