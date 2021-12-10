@@ -8,7 +8,7 @@ def main():
     Database().connect(**db)
 
     # case 1
-    one = User.find().where(name='ping').one()
+    one = User.find().where(name='lucy', id=1).one()
     print(one)
 
     # # case 2
@@ -19,9 +19,9 @@ def main():
     # one = User.find().where(name='ping', phone='18976641111').one()
     # print(one)
 
-    # case 4
-    one = User.find().where('money', '!=', 200).order('id desc').one()
-    print(one)
+    # # case 4
+    # one = User.find().where('money', '!=', 200).order('id desc').one()
+    # print(one)
 
     # # case 5
     # all = User.find().where('name', 'not in', ['ping', 'lucy']).all()

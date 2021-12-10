@@ -256,15 +256,21 @@ class Model(object):
             if len(args) != 3:
                 raise Exception('where statement error')
             field = args[0]
+            value = args[2]
+            if value == '' or value is None:
+                return self
+
             if field.find('.'):
                 field = '.'.join([f"`{v}`" for v in field.split('.')])
             cond = dict()
             cond['op'] = args[1]
             cond['field'] = field
-            cond['value'] = args[2]
+            cond['value'] = value
             self.__where.append(cond)
         if len(kwargs) > 0:
             for k, v in kwargs.items():
+                if v == '' or v is None:
+                    continue
                 cond = dict()
                 cond['op'] = '='
                 cond['field'] = f"`{k}`"
