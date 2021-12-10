@@ -39,6 +39,15 @@ class Model(object):
         else:
             raise Exception(f"object has no attribute '{name}'")
 
+    def __getitem__(self, item):
+        return getattr(self, item)
+
+    def keys(self):
+        fields = {}
+        fields.update(self.__old_fields)
+        fields.update(self.__new_fields)
+        return fields.keys()
+
     def __str__(self):
         fields = {}
         fields.update(self.__old_fields)
