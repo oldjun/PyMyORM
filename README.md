@@ -114,6 +114,30 @@ for one in all:
     print(one)
 ```
 
+### where
+we may filter data set by pass the where condition like below
+```python
+from models.user import User
+model = User.find()
+if id:
+    model.where(id=id)
+if name:
+    model.where(name=name)
+if phone:
+    model.where(phone=phone)
+if status:
+    model.where(status=status)
+```
+as you see, there are more `if` clause as conditions, it looks ugly.
+to enhance the code more readable, we can rewrite the code like this:
+
+```python
+from models.user import User
+model = User.find().where(id=id, name=name, phone=phone, status=status)
+```
+
+`where` function will auto ignore the empty value or None value.
+
 ### update
 
 ```python
