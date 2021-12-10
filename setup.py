@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 from setuptools import setup, find_packages
 
-version = '1.0.7'
+version = '1.0.8'
 
 with open("./README.md", encoding="utf-8") as f:
     readme = f.read()
