@@ -8,12 +8,12 @@ if __name__ == '__main__':
 
     User.truncate()
 
-    fields = ('name', 'phone', 'money')
+    fields = ('name', 'phone', 'money', 'gender')
     values = []
     fp = open('user.txt', 'r')
     for line in fp:
         line = line.strip('\r\n')
-        value = (name, phone, money) = line.split()
+        value = (name, phone, money, gender) = line.split()
         values.append(value)
     fp.close()
 

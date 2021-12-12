@@ -113,12 +113,14 @@ class Model(object):
                 if pk not in self.__select:
                     ak = f"`{self.__alias}`.*"
                     if ak not in self.__select:
-                        self.__select.insert(0, pk)
+                        if not self.__group:
+                            self.__select.insert(0, pk)
             else:
                 pk = f"`{self.primary_key}`"
                 if pk not in self.__select:
                     if '*' not in self.__select:
-                        self.__select.insert(0, pk)
+                        if not self.__group:
+                            self.__select.insert(0, pk)
             sql += ','.join([f"{item}" for item in self.__select])
         else:
             sql += "*"
@@ -145,10 +147,10 @@ class Model(object):
 
     def __build_other_sql(self):
         sql = ''
-        if self.__order:
-            sql += f"order by {self.__order} "
         if self.__group:
             sql += f"group by {self.__group} "
+        if self.__order:
+            sql += f"order by {self.__order} "
         if self.__limit:
             if self.__offset:
                 sql += f"limit {self.__offset},{self.__limit}"
@@ -215,20 +217,33 @@ class Model(object):
         arg_list = []
         for arg in args:
             arg = arg.strip()
-            if arg.find('.'):
-                temp = []
-                for v in arg.split('.'):
-                    if v == '*':
-                        temp.append(v)
-                    else:
-                        temp.append(f"`{v}`")
-                field = '.'.join(temp)
+            arr = arg.split()
+            field = ''
+            if len(arr) > 1:
+                if len(arr) == 2:
+                    pass
+                if len(arr) == 3:
+                    if arr[1] != 'as':
+                        raise Exception(f'select statement error: {arg}')
+                    del arr[1]
+                field = f"{arr[0]} as `{arr[1]}`"
+                print(arr)
             else:
-                if arg == '*':
-                    field = arg
+                if arg.find('.'):
+                    temp = []
+                    for v in arg.split('.'):
+                        if v == '*':
+                            temp.append(v)
+                        else:
+                            temp.append(f"`{v}`")
+                    field = '.'.join(temp)
                 else:
-                    field = f"`{arg}`"
-            arg_list.append(field)
+                    if arg == '*':
+                        field = arg
+                    else:
+                        field = f"`{arg}`"
+            if field != '':
+                arg_list.append(field)
         self.__select.extend(arg_list)
         return self
 

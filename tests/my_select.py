@@ -4,12 +4,12 @@ from models.user import User
 
 
 if __name__ == '__main__':
-    
+
     Database().debug(debug=True)
     Database().connect(**db)
 
     # case 1
-    one = User.find().where(name='lucy', id=1).one()
+    one = User.find().where(name='lucy').one()
     print(one)
 
     # # case 2
