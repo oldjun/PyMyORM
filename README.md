@@ -265,6 +265,19 @@ from models.user import User
 names = User.find().column('name')
 ```
 
+### group by
+
+```python
+from models.user import User
+all = User.find() \
+    .select('gender', 'count(*) as count', 'avg(money) as avg', 'sum(money) as total') \
+    .group('gender') \
+    .having('avg', '>', 220) \
+    .all()
+for one in all:
+    print(one)
+```
+
 ### truncate
 
 ```python
