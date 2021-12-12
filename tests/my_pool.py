@@ -5,7 +5,10 @@ from models.user import User
 from threading import Thread
 
 
+# 定义一个线程任务
 class TaskThread(Thread):
+    def __init__(self, name):
+        self.name = name
 
     def run(self):
         from pymyorm.local import local
@@ -14,10 +17,9 @@ class TaskThread(Thread):
         local.conn = pool.get()
         print(f"thread name={self.name} conn={local.conn}")
         time.sleep(3)
-        one = User.find().where(name='ping').one()
+        one = User.find().where(name=self.name).one()
         print(one)
         pool.put(local.conn)
-        local.conn = None
 
 
 if __name__ == '__main__':
@@ -26,16 +28,13 @@ if __name__ == '__main__':
     pool.size(size=10)
     pool.debug(debug=True)
     pool.create(**db)
-
     stime = time.time()
     thread_list = []
     for _ in range(10):
         thread = TaskThread()
         thread_list.append(thread)
         thread.start()
-
     for thread in thread_list:
         thread.join()
-
     etime = time.time()
     print(f"time diff: {etime - stime}")

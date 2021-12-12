@@ -7,7 +7,7 @@ from models.admin_auth import AdminAuth
 
 if __name__ == '__main__':
 
-    Database().connect(**db)
+    Database.connect(**db)
 
     # case 1
     all = Admin.find().select('a.*').alias('a') \

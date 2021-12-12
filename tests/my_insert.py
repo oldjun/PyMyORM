@@ -5,7 +5,7 @@ from models.user import User
 
 if __name__ == '__main__':
 
-    Database().connect(**db)
+    Database.connect(**db)
 
     # case 1
     user = User(name='rose', phone='18976645599', money=100)

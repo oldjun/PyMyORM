@@ -5,7 +5,7 @@ from models.user import User
 
 if __name__ == '__main__':
 
-    Database().connect(**db)
+    Database.connect(**db)
 
     # # case 1
     # one = User.find().where(name='lily').one()

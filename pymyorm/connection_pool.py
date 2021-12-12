@@ -11,12 +11,14 @@ class ConnectionPool(object):
         self.__pool = None
         self.__debug = False
 
-    def create(self, host, port, user, password, database, charset='utf8'):
+    def create(self, host, port, user, password, database, charset='utf8', debug=False):
         if self.__pool is not None:
             del self.__pool
 
         if self.__size <= 0:
             raise Exception('connection pool size error')
+
+        self.__debug = debug
 
         self.__pool = Queue(self.__size)
         for _ in range(0, self.__size):
@@ -47,6 +49,3 @@ class ConnectionPool(object):
 
     def size(self, size):
         self.__size = size
-
-    def debug(self, debug=False):
-        self.__debug = debug

@@ -1,17 +1,15 @@
 from pymyorm.local import local
-from pymyorm.singleton import Singleton
 from pymyorm.connection import Connection
 
 
-@Singleton
 class Database(object):
-    def __init__(self) -> None:
-        self.__debug = False
 
-    def debug(self, debug=True):
-        self.__debug = debug
-
-    def connect(self, host, port, user, password, database, charset='utf8'):
+    @staticmethod
+    def connect(host, port, user, password, database, charset='utf8', debug=False):
         conn = Connection(host=host, port=port, user=user, password=password, database=database, charset=charset)
-        conn.open(self.__debug)
+        conn.open(debug)
         local.conn = conn
+
+    @staticmethod
+    def execute(sql):
+        return local.conn.execute(sql)

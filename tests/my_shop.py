@@ -18,7 +18,7 @@ def init():
 
 
 if __name__ == '__main__':
-    Database().connect(**db)
+    Database.connect(**db)
 
     # one = Shop.find().where(sid='s-n-1').one()
     # one.name = 'shop-name-x'

@@ -8,6 +8,5 @@ if __name__ == '__main__':
     sql = fp.read()
     fp.close()
 
-    d = Database().connect()
-    d.connect(**db)
-    d.execute(sql)
+    Database.connect(**db)
+    Database.execute(sql)

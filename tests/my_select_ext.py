@@ -3,8 +3,7 @@ from config import db
 from models.user import User
 
 if __name__ == '__main__':
-    Database().debug(debug=True)
-    Database().connect(**db)
+    Database.connect(**db)
 
     # # case 1
     # all = User.find().select('count(*) as count', 'money').group('money').order('count asc').all()

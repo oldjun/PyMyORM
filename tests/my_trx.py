@@ -27,8 +27,7 @@ def create_user():
 
 
 if __name__ == '__main__':
-    Database().debug(debug=True)
-    Database().connect(**db)
+    Database.connect(**db)
     try:
         t.begin()
         create_user()

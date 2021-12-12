@@ -39,7 +39,7 @@ def create_user_inner(name, success=True):
 
 
 if __name__ == '__main__':
-    Database().connect(**db)
+    Database.connect(**db)
     t.begin()
     create_user('ping')
     create_user('lucy', False)
