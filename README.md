@@ -75,6 +75,20 @@ Database.connect(host='127.0.0.1',
                  charset='utf8')
 ```
 
+### raw sql
+
+sometimes we need to run raw sql, like creating tables, we can call database's execute method
+
+```python
+from pymyorm.database import Database
+fp = open('sql/t_user.sql', 'r', encoding='utf-8')
+sql = fp.read()
+fp.close()
+
+Database.connect(**db)
+Database.execute(sql)
+```
+
 ### select
 
 ```python
