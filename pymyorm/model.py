@@ -178,35 +178,48 @@ class Model(object):
             sql += f"{join['type']} join `{join['table']}` as `{join['alias']}` on {on} "
         return sql
 
-    def one(self):
+    def one(self, raw=False):
         if self.__class__.tablename is None:
             raise Exception('missing table name')
 
         self.__limit = 1
         sql = self.sql()
 
-        one = self.__class__()
-        res = self.__conn.fetchone(sql)
-        if res is None:
+        one = self.__conn.fetchone(sql)
+        if one is None:
             return None
-        for (k, v) in res.items():
-            one.__old_fields[k] = v
-        return one
+        for k, v in one.items():
+            if k in self.datetime_fields:
+                one[k] = v.strftime('%Y-%m-%d %H:%M:%S')
+        if raw:
+            return one
 
-    def all(self):
+        res = self.__class__()
+        for (k, v) in one.items():
+            res.__old_fields[k] = v
+        return res
+
+    def all(self, raw=False):
         if self.__class__.tablename is None:
             raise Exception('missing table name')
         sql = self.sql()
-        res = self.__conn.fetchall(sql)
-        if res is None:
+        all = self.__conn.fetchall(sql)
+        if all is None:
             return []
-        all = []
-        for one in res:
+        for one in all:
+            for k, v in one.items():
+                if k in self.datetime_fields:
+                    one[k] = v.strftime('%Y-%m-%d %H:%M:%S')
+        if raw:
+            return all
+
+        res = []
+        for one in all:
             item = self.__class__()
             for (k, v) in one.items():
                 item.__old_fields[k] = v
-            all.append(item)
-        return all
+            res.append(item)
+        return res
 
     def alias(self, alias):
         self.__alias = alias

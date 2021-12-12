@@ -7,13 +7,10 @@ if __name__ == '__main__':
 
     Database.connect(**db)
 
-    # case 1
-    one = User.find().where(name='ping').one()
-    for k in one.keys():
-        print(one[k])
-    # print(dict(one))
+    # # case 1
+    # one = User.find().where(name='ping').one()
+    # print(one)
 
     # case 2
-    all = User.find().all()
-    tmp = [dict(one) for one in all]
-    print(tmp)
+    all = User.find().all(raw=True)
+    print(all)
