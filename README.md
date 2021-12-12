@@ -203,6 +203,18 @@ from models.user import User
 User.find().delete() # delete all users
 ```
 
+### batch insert
+```python
+from models.user import User
+fields = ('name', 'phone', 'money')
+values = [
+    ('jack', '18976643333', 120),
+    ('sean', '18976654444', 160),
+    ('vera', '18976645555', 180),
+]
+User.insert(fields, values)
+```
+
 ### exists
 
 ```python
@@ -257,7 +269,7 @@ names = User.find().column('name')
 
 ```python
 from models.user import User
-User.find().truncate()
+User.truncate()
 ```
 
 ### join
