@@ -230,7 +230,6 @@ class Model(object):
                         raise Exception(f'select statement error: {arg}')
                     del arr[1]
                 field = f"{arr[0]} as `{arr[1]}`"
-                print(arr)
             else:
                 if arg.find('.'):
                     temp = []
