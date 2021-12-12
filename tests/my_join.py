@@ -5,7 +5,8 @@ from models.admin_role import AdminRole
 from models.admin_auth import AdminAuth
 
 
-def main():
+if __name__ == '__main__':
+
     Database().connect(**db)
 
     # case 1
@@ -41,7 +42,3 @@ def main():
     #     .all()
     # for one in all:
     #     print(one)
-
-
-if __name__ == '__main__':
-    main()

@@ -3,7 +3,7 @@ from config import db
 from models.user import User
 
 
-def main():
+if __name__ == '__main__':
 
     Database().connect(**db)
 
@@ -14,7 +14,3 @@ def main():
 
     # case 2
     User.find().where(name='lily').update(money=180)
-
-
-if __name__ == '__main__':
-    main()

@@ -5,10 +5,6 @@ from models.user import User
 from my_trx_func import update_user
 
 
-Database().debug(debug=True)
-Database().connect(**db)
-
-
 def create_user():
     fp = open('user.txt', 'r')
     try:
@@ -30,7 +26,9 @@ def create_user():
     fp.close()
 
 
-def main():
+if __name__ == '__main__':
+    Database().debug(debug=True)
+    Database().connect(**db)
     try:
         t.begin()
         create_user()
@@ -38,7 +36,3 @@ def main():
     except Exception as e:
         t.rollback()
         raise e
-
-
-if __name__ == '__main__':
-    main()

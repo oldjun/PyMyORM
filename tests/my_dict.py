@@ -3,7 +3,8 @@ from config import db
 from models.user import User
 
 
-def main():
+if __name__ == '__main__':
+
     Database().debug(debug=True)
     Database().connect(**db)
 
@@ -17,7 +18,3 @@ def main():
     all = User.find().all()
     tmp = [dict(one) for one in all]
     print(tmp)
-
-
-if __name__ == '__main__':
-    main()

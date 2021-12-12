@@ -20,7 +20,8 @@ class TaskThread(Thread):
         local.conn = None
 
 
-def main():
+if __name__ == '__main__':
+
     pool = ConnectionPool()
     pool.size(size=10)
     pool.debug(debug=True)
@@ -38,7 +39,3 @@ def main():
 
     etime = time.time()
     print(f"time diff: {etime - stime}")
-
-
-if __name__ == '__main__':
-    main()

@@ -3,13 +3,9 @@ from config import db
 from models.user import User
 
 
-def main():
+if __name__ == '__main__':
 
     Database().connect(**db)
 
     exists = User.find().where(name='ping').exists()
     print(exists)
-
-
-if __name__ == '__main__':
-    main()

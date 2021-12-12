@@ -5,13 +5,13 @@ from models.admin_role import AdminRole
 from models.admin_auth import AdminAuth
 
 
-def main():
+if __name__ == '__main__':
 
     Database().connect(**db)
 
-    Admin.find().truncate()
-    AdminRole.find().truncate()
-    AdminAuth.find().truncate()
+    Admin.truncate()
+    AdminRole.truncate()
+    AdminAuth.truncate()
 
     for name in ['role1', 'role2', 'role3']:
         exists = AdminRole.find().where(name=name).exists()
@@ -41,7 +41,3 @@ def main():
         model.action = action
         model.save()
     fp.close()
-
-
-if __name__ == '__main__':
-    main()

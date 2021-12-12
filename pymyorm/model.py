@@ -63,6 +63,22 @@ class Model(object):
     def find(cls):
         return cls()
 
+    @classmethod
+    def insert(cls, fields, values):
+        model = cls()
+        cols = ','.join([f"`{field}`" for field in fields])
+        rows = ','.join([f"%s" for _ in range(len(fields))])
+        sql = f"insert into `{model.__class__.tablename}`({cols}) values({rows})"
+        return model.__conn.insert_batch(sql.strip(), values)
+
+    @classmethod
+    def truncate(cls):
+        model = cls()
+        if model.__class__.tablename is None:
+            raise Exception('missing table name')
+        sql = f"truncate table `{model.__class__.tablename}`"
+        return model.__conn.execute(sql.strip())
+
     def save(self):
         if self.__old_fields.get(self.__class__.primary_key) is None:
             fields = ','.join([f"`{item}`" for item in self.__new_fields.keys()])
@@ -241,13 +257,6 @@ class Model(object):
         else:
             sql += f"where `{self.__class__.primary_key}`='{self.__old_fields.get(self.__class__.primary_key)}'"
 
-        self.__sql = sql.strip()
-        return self.__conn.execute(self.__sql)
-
-    def truncate(self):
-        if self.__class__.tablename is None:
-            raise Exception('missing table name')
-        sql = f"truncate table `{self.__class__.tablename}`"
         self.__sql = sql.strip()
         return self.__conn.execute(self.__sql)
 

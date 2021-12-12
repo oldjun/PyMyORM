@@ -2,22 +2,9 @@ from pymyorm.database import Database
 from config import db
 from models.shop import Shop
 
-Database().connect(**db)
-
-
-def main():
-    # one = Shop.find().where(sid='s-n-1').one()
-    # one.name = 'shop-name-x'
-    # one.save()
-    # print(one)
-
-    Shop.find().where(sid='s-n-1').update(sid='s-n-x')
-
 
 def init():
-
-    Shop.find().truncate()
-
+    Shop.truncate()
     fp = open('shop.txt', 'r')
     for line in fp:
         line = line.strip('\r\n')
@@ -31,4 +18,12 @@ def init():
 
 
 if __name__ == '__main__':
-    main()
+    Database().connect(**db)
+
+    # one = Shop.find().where(sid='s-n-1').one()
+    # one.name = 'shop-name-x'
+    # one.save()
+    # print(one)
+
+    Shop.find().where(sid='s-n-1').update(sid='s-n-x')
+

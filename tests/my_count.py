@@ -3,13 +3,9 @@ from config import db
 from models.user import User
 
 
-def main():
+if __name__ == '__main__':
 
     Database().connect(**db)
 
     count = User.find().where(status='0').count('id')
     print(count)
-
-
-if __name__ == '__main__':
-    main()

@@ -4,7 +4,8 @@ from config import db
 from models.user import User
 
 
-def main():
+if __name__ == '__main__':
+
     Database().connect(**db)
 
     all = User.find().all()
@@ -17,7 +18,3 @@ def main():
         except Exception as e:
             t.rollback()
             raise e
-
-
-if __name__ == '__main__':
-    main()

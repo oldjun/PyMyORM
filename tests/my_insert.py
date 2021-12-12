@@ -3,7 +3,8 @@ from config import db
 from models.user import User
 
 
-def main():
+if __name__ == '__main__':
+
     Database().connect(**db)
 
     # case 1
@@ -16,7 +17,3 @@ def main():
     user.phone = '18976645599'
     user.money = 100
     user.save()
-
-
-if __name__ == '__main__':
-    main()

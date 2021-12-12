@@ -3,12 +3,8 @@ from config import db
 from models.user import User
 
 
-def main():
+if __name__ == '__main__':
 
     Database().connect(**db)
 
-    User.find().truncate()
-
-
-if __name__ == '__main__':
-    main()
+    User.truncate()

@@ -3,7 +3,8 @@ from config import db
 from models.user import User
 
 
-def main():
+if __name__ == '__main__':
+    
     Database().debug(debug=True)
     Database().connect(**db)
 
@@ -32,7 +33,3 @@ def main():
     # all = User.find().order('id desc').offset(0).limit(5).all()
     # for one in all:
     #     print(one)
-
-
-if __name__ == '__main__':
-    main()

@@ -8,13 +8,12 @@ if __name__ == '__main__':
 
     User.truncate()
 
+    # 批量插入
     fields = ('name', 'phone', 'money')
-    values = []
-    fp = open('user.txt', 'r')
-    for line in fp:
-        line = line.strip('\r\n')
-        value = (name, phone, money) = line.split()
-        values.append(value)
-    fp.close()
+    values = [
+        ('jack', '18976643333', 120),
+        ('sean', '18976654444', 160),
+        ('vera', '18976645555', 180),
+    ]
 
     User.insert(fields, values)

@@ -73,6 +73,19 @@ class Connection(object):
         except Exception as e:
             raise e
 
+    def insert_batch(self, sql, data):
+        try:
+            if self.__debug:
+                print(f"sql: {sql}")
+            self.__conn.autocommit(self.__autocommit)
+            cursor = self.__conn.cursor()
+            cursor.executemany(sql, data)
+            last_insert_id = cursor.lastrowid
+            cursor.close()
+            return last_insert_id
+        except Exception as e:
+            raise e
+
     def execute(self, sql):
         try:
             if self.__debug:

@@ -3,17 +3,6 @@ from pymyorm.transaction import Transaction as t
 from config import db
 from models.user import User
 
-Database().connect(**db)
-
-
-def main():
-    t.begin()
-    create_user('ping')
-    create_user('lucy', False)
-    create_user('lily', False)
-    create_user('jack')
-    t.commit()
-
 
 def create_user(name, success=True):
     try:
@@ -50,4 +39,10 @@ def create_user_inner(name, success=True):
 
 
 if __name__ == '__main__':
-    main()
+    Database().connect(**db)
+    t.begin()
+    create_user('ping')
+    create_user('lucy', False)
+    create_user('lily', False)
+    create_user('jack')
+    t.commit()
