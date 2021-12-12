@@ -16,6 +16,7 @@ class Model(object):
         self.__where = []
         self.__order = {}
         self.__group = {}
+        self.__having = ''
         self.__offset = ''
         self.__limit = ''
         self.__alias = ''
@@ -149,6 +150,8 @@ class Model(object):
         sql = ''
         if self.__group:
             sql += f"group by {self.__group} "
+        if self.__having:
+            sql += f"having {self.__having}"
         if self.__order:
             sql += f"order by {self.__order} "
         if self.__limit:
@@ -308,6 +311,12 @@ class Model(object):
 
     def group(self, group):
         self.__group = group
+        return self
+
+    def having(self, *args):
+        if len(args) != 3:
+            raise Exception(f'having statement error')
+        self.__having = f"`{args[0]}` {args[1]} {args[2]}"
         return self
 
     def offset(self, offset):
