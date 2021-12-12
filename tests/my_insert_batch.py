@@ -8,12 +8,13 @@ if __name__ == '__main__':
 
     User.truncate()
 
-    # 批量插入
-    fields = ('name', 'phone', 'money')
+    fields = ('name', 'phone', 'money', 'gender')
     values = [
-        ('jack', '18976643333', 120),
-        ('sean', '18976654444', 160),
-        ('vera', '18976645555', 180),
+        ('ping', '18976641111', 100, 1),
+        ('lucy', '18976642222', 100, 2),
+        ('lily', '18976643333', 200, 1),
+        ('jack', '18976644444', 300, 2),
+        ('sean', '18976645555', 500, 1),
+        ('vera', '18976646666', 100, 1),
     ]
-
     User.insert(fields, values)

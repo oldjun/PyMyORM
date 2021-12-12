@@ -67,13 +67,12 @@ Connect to database
 
 ```python
 from pymyorm.database import Database
-Database().connect(host='127.0.0.1',
-                   port=3306,
-                   user='root',
-                   password='password',
-                   database='test',
-                   charset='utf8'
-                   )
+Database.connect(host='127.0.0.1',
+                 port=3306,
+                 user='root',
+                 password='password',
+                 database='test',
+                 charset='utf8')
 ```
 
 ### select
