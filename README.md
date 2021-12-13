@@ -85,7 +85,7 @@ fp = open('sql/t_user.sql', 'r', encoding='utf-8')
 sql = fp.read()
 fp.close()
 
-Database.connect(**db)
+Database.connect(**config)
 Database.execute(sql)
 ```
 
@@ -125,6 +125,20 @@ from models.user import User
 all = User.find().order('id desc').offset(0).limit(5).all()
 for one in all:
     print(one)
+```
+
+### batch select
+
+the all() function will return all data which match the where condition, if the table is big, it will cost too much memory and slow down the program.
+
+in this situation we can use batch() instead of all(). the code slice below shows each time read 100 users, until all to the end.
+
+```python
+from models.user import User
+batch = User.find().batch(size=100)
+for all in batch:
+    for one in all:
+        print(one)
 ```
 
 ### where
@@ -187,6 +201,22 @@ user.money = 100
 user.save()
 ```
 
+### batch insert
+
+the save() function only insert/update one data at a time.
+we can use insert() function to insert more than one data at a time to improve the performance.
+
+```python
+from models.user import User
+fields = ('name', 'phone', 'money')
+values = [
+    ('jack', '18976643333', 120),
+    ('sean', '18976654444', 160),
+    ('vera', '18976645555', 180),
+]
+User.insert(fields, values)
+```
+
 ### delete
 
 ```python
@@ -214,18 +244,6 @@ for one in all:
 # case 4
 from models.user import User
 User.find().delete() # delete all users
-```
-
-### batch insert
-```python
-from models.user import User
-fields = ('name', 'phone', 'money')
-values = [
-    ('jack', '18976643333', 120),
-    ('sean', '18976654444', 160),
-    ('vera', '18976645555', 180),
-]
-User.insert(fields, values)
 ```
 
 ### exists
