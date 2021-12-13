@@ -35,7 +35,9 @@ Documentation is coming soon.
 
 ## <a href=#example>Example</a>
 
-The following examples make use of a simple table
+### table
+
+The following examples use a simple table
 
 ```sql
 create table `t_user` (
@@ -64,7 +66,7 @@ class User(Model):
     tablename = 't_user'
 ```
 
-by the default model's primary key is `id`, if your table's primary key isn't `id`, you can modify the model definition like this:
+by default model's primary key is `id`, if your table's primary key isn't `id`, you can adjust the model class's attributes like this:
 
 ```python
 from pymyorm.model import Model
@@ -74,7 +76,7 @@ class User(Model):
     primary_key = 'this is table primary key'
 ```
 
-if your table contains a datetime column or decimal column, and you probably like to auto format the column's value from datetime to string,
+if your table contains at least one datetime column or decimal column, you probably like to auto format the column's value from datetime to string,
 or from decimal to float, you can do it like this
 
 ```python
@@ -92,20 +94,16 @@ connect to database at a single thread mode
 
 ```python
 from pymyorm.database import Database
-Database.connect(host='127.0.0.1',
-                 port=3306,
-                 user='root',
-                 password='password',
-                 database='test',
-                 charset='utf8')
+config = dict(host='127.0.0.1', port=3306, user='root', password='password', database='test')
+Database.connect(**config)
 ```
 
-if your program is running at multi thread mode, you should use connection pool.
+if your program is running at multi thread mode, you should use connection pool instead.
 see the connection pool section.
 
 ### raw sql
 
-sometimes we need to run raw sql, like creating tables, we can call database's execute method
+sometimes we need to execute sql statement, like creating tables, do it like below.
 
 ```python
 from pymyorm.database import Database
@@ -119,7 +117,7 @@ Database.execute(sql)
 
 ### select
 
-find one user which name is 'ping' from table
+find one user which name is 'ping'
 
 ```python
 from models.user import User
@@ -131,11 +129,11 @@ find one user which name is 'ping' and phone is '18976641111'
 
 ```python
 from models.user import User
-one = User.find().select('name').where(name='ping').where(phone='18976641111').one()
+one = User.find().where(name='ping').where(phone='18976641111').one()
 print(one)
 ```
 
-find one user which name is 'ping' and phone is '18976641111'
+find one user which name is 'ping' and phone is '18976641111', in another way
 
 ```python
 from models.user import User
@@ -143,7 +141,7 @@ one = User.find().where(name='ping', phone='18976641111').one()
 print(one)
 ```
 
-find one user which money is not equal to 200
+find one user which money is not equals to 200
 
 ```python
 from models.user import User
@@ -160,7 +158,7 @@ for one in all:
 
 ### batch select
 
-the all() function will return all data which match the where condition, if the table is big, it will cost too much memory and slow down the program.
+the all() function will return all data which matched the where conditions, if the table is too big, it will cost too much memory and slow down the program.
 
 in this situation we can use batch() instead of all(). the code slice below shows each time read 100 users, until all to the end.
 
@@ -174,7 +172,7 @@ for all in batch:
 
 ### where
 
-we may filter data set by pass the where condition like below
+we may filter dataset by passing several where conditions like below
 
 ```python
 from models.user import User
@@ -188,7 +186,7 @@ if phone:
 if status:
     model.where(status=status)
 ```
-as you see, there are more `if` clause as conditions, it looks ugly.
+as you see, there are too more `if` clause conditions, it looks ugly.
 to enhance the code more readable, we can rewrite the code like this:
 
 ```python
@@ -196,11 +194,11 @@ from models.user import User
 model = User.find().where(id=id, name=name, phone=phone, status=status)
 ```
 
-`where` function will auto ignore the empty value or None value.
+`where` function will auto ignore empty string value or None value.
 
 ### update
 
-find the user which name is 'lily', and modify her money to 500, her phone to '18976642222'
+find the user which name is 'lily', and change her money to 500, her phone to '18976642222'
 
 ```python
 from models.user import User
@@ -210,7 +208,7 @@ one.phone = '18976642222'
 one.save()
 ```
 
-in this case we modify the user which name is 'lily', update her money and phone directly
+change the user which name is 'lily', update her money and phone directly
 
 ```python
 # case 2
@@ -220,7 +218,7 @@ User.find().where(name='lily').update(money=500, phone='18976642222')
 
 ### insert
 
-insert one user
+insert one user into table
 
 ```python
 # case 1
@@ -229,7 +227,7 @@ user = User(name='rose', phone='18976643333', money=100)
 user.save()
 ```
 
-insert one user in another way
+insert one user into table, in another way
 
 ```python
 # case 2
@@ -299,7 +297,7 @@ User.find().delete()
 
 ### exists
 
-determine the user which name is 'ping' is exists or not, return True or False rather than the user data
+find the user which name is 'ping' is exists or not, return True or False rather than the user data
 
 ```python
 from models.user import User
@@ -363,7 +361,7 @@ names = User.find().column('name')
 
 ### group by
 
-group the users by gender, and calculate the average money of each group, and return the users which group average money area more than 220
+group the users by gender, and calculate the average money of each group, and return the users which group average money are more than 220
 
 ```python
 from models.user import User
@@ -387,7 +385,7 @@ User.truncate()
 
 ### join
 
-find admin which role is 'roles' and which lock is equal to 0
+find admin which role is 'roles' and which lock is 0
 
 ```python
 # case 1: inner join
