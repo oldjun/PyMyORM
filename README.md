@@ -54,7 +54,8 @@ create table `t_user` (
 ) engine=InnoDB auto_increment=1 default charset=utf8mb4;
 ```
 
-Model definition models/user.py
+### model
+the simplest definition of a model
 
 ```python
 from pymyorm.model import Model
@@ -63,7 +64,31 @@ class User(Model):
     tablename = 't_user'
 ```
 
-Connect to database
+by the default model's primary key is `id`, if your table's primary key isn't `id`, you can modify the model definition like this:
+
+```python
+from pymyorm.model import Model
+
+class User(Model):
+    tablename = 't_user'
+    primary_key = 'this is table primary key'
+```
+
+if your table contains a datetime column or decimal column, and you probably like to auto format the column's value from datetime to string,
+or from decimal to float, you can do it like this
+
+```python
+from pymyorm.model import Model
+
+class User(Model):
+    tablename = 't_user'
+    datetime_fields = ['create_time', 'update_time']
+    decimal_fields = ['money']
+```
+
+### connect
+
+connect to database at a single thread mode
 
 ```python
 from pymyorm.database import Database
@@ -74,6 +99,9 @@ Database.connect(host='127.0.0.1',
                  database='test',
                  charset='utf8')
 ```
+
+if your program is running at multi thread mode, you should use connection pool.
+see the connection pool section.
 
 ### raw sql
 
@@ -91,36 +119,39 @@ Database.execute(sql)
 
 ### select
 
+find one user which name is 'ping' from table
+
 ```python
-# case 1
 from models.user import User
 one = User.find().where(name='ping').one()
 print(one.id, one.name)
 ```
 
+find one user which name is 'ping' and phone is '18976641111'
+
 ```python
-# case 2
 from models.user import User
 one = User.find().select('name').where(name='ping').where(phone='18976641111').one()
 print(one)
 ```
 
+find one user which name is 'ping' and phone is '18976641111'
+
 ```python
-# case 3
 from models.user import User
 one = User.find().where(name='ping', phone='18976641111').one()
 print(one)
 ```
 
+find one user which money is not equal to 200
+
 ```python
-# case 4
 from models.user import User
-one = User.find().where('money', '!=', 200).order('id desc').one()
+one = User.find().where('money', '!=', 200).one()
 print(one)
 ```
 
 ```python
-# case 6
 from models.user import User
 all = User.find().order('id desc').offset(0).limit(5).all()
 for one in all:
@@ -142,7 +173,9 @@ for all in batch:
 ```
 
 ### where
+
 we may filter data set by pass the where condition like below
+
 ```python
 from models.user import User
 model = User.find()
@@ -167,14 +200,17 @@ model = User.find().where(id=id, name=name, phone=phone, status=status)
 
 ### update
 
+find the user which name is 'lily', and modify her money to 500, her phone to '18976642222'
+
 ```python
-# case 1
 from models.user import User
 one = User.find().where(name='lily').one()
 one.money = 500
 one.phone = '18976642222'
 one.save()
 ```
+
+in this case we modify the user which name is 'lily', update her money and phone directly
 
 ```python
 # case 2
@@ -184,12 +220,16 @@ User.find().where(name='lily').update(money=500, phone='18976642222')
 
 ### insert
 
+insert one user
+
 ```python
 # case 1
 from models.user import User
 user = User(name='rose', phone='18976643333', money=100)
 user.save()
 ```
+
+insert one user in another way
 
 ```python
 # case 2
@@ -219,34 +259,47 @@ User.insert(fields, values)
 
 ### delete
 
+find the user which name is 'lily', and delete it
+
 ```python
-# case 1
 from models.user import User
 one = User.find().where(name='lily').one()
 one.delete()
 ```
 
+delete the user which name is 'lily' directly
+
 ```python
-# case 2
 from models.user import User
 User.find().where(money=100).delete()
 ```
 
+find users which money more than 100, and delete it one by one
+
 ```python
-# case 3
 from models.user import User
-all = User.find().select('name', 'phone').where('money', '>', 100).all()
+all = User.find().where('money', '>', 100).all()
 for one in all:
     one.delete()
 ```
 
+delete the users which money more than 100 directly
+
 ```python
-# case 4
 from models.user import User
-User.find().delete() # delete all users
+User.find().where('money', '>', 100).delete()
+```
+
+delete all users, don't do this if you don't know what you are doing.
+
+```python
+from models.user import User
+User.find().delete()
 ```
 
 ### exists
+
+determine the user which name is 'ping' is exists or not, return True or False rather than the user data
 
 ```python
 from models.user import User
@@ -255,12 +308,16 @@ exists = User.find().where(name='ping').exists()
 
 ### count
 
+count the number of users which status is equal to 0
+
 ```python
 from models.user import User
-count = User.find().where(status='0').count()
+count = User.find().where(status=0).count()
 ```
 
 ### min
+
+find the minimal money of users, return the minimal money rather than the user data
 
 ```python
 from models.user import User
@@ -268,6 +325,8 @@ money = User.find().where(status=0).min('money')
 ```
 
 ### max
+
+find the maximal money of users, return the maximal money rather than the user data
 
 ```python
 from models.user import User
@@ -277,6 +336,8 @@ print(money)
 
 ### average
 
+calculate the average money of the users, return the average money rather than the user data
+
 ```python
 from models.user import User
 money = User.find().where(status=0).average('money')
@@ -284,12 +345,16 @@ money = User.find().where(status=0).average('money')
 
 ### scalar
 
+find the user's money which name is jack
+
 ```python
 from models.user import User
-money = User.find().where(id=1).scalar('money')
+money = User.find().where(name='jack').scalar('money')
 ```
 
 ### column
+
+list all user's name
 
 ```python
 from models.user import User
@@ -297,6 +362,8 @@ names = User.find().column('name')
 ```
 
 ### group by
+
+group the users by gender, and calculate the average money of each group, and return the users which group average money area more than 220
 
 ```python
 from models.user import User
@@ -311,12 +378,16 @@ for one in all:
 
 ### truncate
 
+truncate the user table, don't do this if you don't know what you are doing.
+
 ```python
 from models.user import User
 User.truncate()
 ```
 
 ### join
+
+find admin which role is 'roles' and which lock is equal to 0
 
 ```python
 # case 1: inner join
