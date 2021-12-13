@@ -5,6 +5,7 @@ class Model(object):
     tablename = None
     primary_key = 'id'
     datetime_fields = []
+    decimal_fields = []
 
     def __init__(self, **kwargs) -> None:
         self.__conn = local.conn
@@ -40,10 +41,7 @@ class Model(object):
             value = self.__old_fields[name]
         else:
             raise Exception(f"object has no attribute '{name}'")
-        if name in self.datetime_fields:
-            return value.strftime('%Y-%m-%d %H:%M:%S')
-        else:
-            return value
+        return value
 
     def __getitem__(self, item):
         return getattr(self, item)
@@ -188,9 +186,12 @@ class Model(object):
         one = self.__conn.fetchone(sql)
         if one is None:
             return None
-        for k, v in one.items():
-            if k in self.datetime_fields:
-                one[k] = v.strftime('%Y-%m-%d %H:%M:%S')
+        if self.datetime_fields or self.decimal_fields:
+            for k, v in one.items():
+                if k in self.datetime_fields:
+                    one[k] = v.strftime('%Y-%m-%d %H:%M:%S')
+                elif k in self.decimal_fields:
+                    one[k] = float(v)
         if raw:
             return one
 
@@ -206,10 +207,13 @@ class Model(object):
         all = self.__conn.fetchall(sql)
         if all is None:
             return []
-        for one in all:
-            for k, v in one.items():
-                if k in self.datetime_fields:
-                    one[k] = v.strftime('%Y-%m-%d %H:%M:%S')
+        if self.datetime_fields or self.decimal_fields:
+            for one in all:
+                for k, v in one.items():
+                    if k in self.datetime_fields:
+                        one[k] = v.strftime('%Y-%m-%d %H:%M:%S')
+                    elif k in self.decimal_fields:
+                        one[k] = float(v)
         if raw:
             return all
 
@@ -416,3 +420,15 @@ class Model(object):
         if result is None:
             return None
         return result[field]
+
+    def batch(self, size=100, raw=False):
+        if self.__class__.tablename is None:
+            raise('missing table name')
+        total = self.count()
+        sql = self.sql()
+        batch = self.__conn.batch(sql)
+        batch.raw(raw=raw)
+        batch.size(size=size)
+        batch.total(total=total)
+        batch.model(self)
+        return batch
