@@ -345,85 +345,99 @@ class Model(object):
 
     def count(self, field=None):
         if self.__class__.tablename is None:
-            raise('missing table name')
+            raise Exception('missing table name')
         sql = "select "
         if field is not None:
-            if field == '*':
-                sql += "count(*) "
+            if field.find('.'):
+                temp = []
+                for v in field.split('.'):
+                    if v == '*':
+                        temp.append(v)
+                    else:
+                        temp.append(f"`{v}`")
+                field = '.'.join(temp)
             else:
-                sql += f"count(`{field}`) "
+                if field != '*':
+                    field = f"`{field}`"
+            sql += f"count({field}) "
         else:
-            sql += "count(*) "
+            sql += f"count(*) "
         sql += f"from `{self.__class__.tablename}` "
+        if self.__alias:
+            sql += f"as `{self.__alias}` "
+        sql += self.__build_join_sql()
         sql += self.__build_where_sql()
         sql += self.__build_other_sql()
         self.__sql = sql.strip()
         return self.__conn.count(self.__sql)
 
-    def min(self, field):
+    def __build_simple_sql(self, field, func=''):
         if self.__class__.tablename is None:
-            raise('missing table name')
-        sql = f"select min(`{field}`) from `{self.__class__.tablename}` "
+            raise Exception('missing table name')
+
+        if field is None:
+            raise Exception('field is None')
+
+        sql = "select "
+        if field.find('.'):
+            temp = []
+            for v in field.split('.'):
+                temp.append(f"`{v}`")
+            field = '.'.join(temp)
+        else:
+            field = f"`{field}`"
+        if func:
+            sql += f"{func}({field}) "
+        else:
+            sql += f"{field} "
+        sql += f"from `{self.__class__.tablename}` "
+        if self.__alias:
+            sql += f"as `{self.__alias}` "
+        sql += self.__build_join_sql()
         sql += self.__build_where_sql()
         sql += self.__build_other_sql()
-        self.__sql = sql.strip()
+        return sql.strip()
+
+    def min(self, field):
+        self.__sql = self.__build_simple_sql(field, 'min')
         return self.__conn.min(self.__sql)
 
     def max(self, field):
-        if self.__class__.tablename is None:
-            raise('missing table name')
-        sql = f"select max(`{field}`) from `{self.__class__.tablename}` "
-        sql += self.__build_where_sql()
-        sql += self.__build_other_sql()
-        self.__sql = sql.strip()
+        self.__sql = self.__build_simple_sql(field, 'max')
         return self.__conn.max(self.__sql)
 
     def average(self, field):
-        if self.__class__.tablename is None:
-            raise('missing table name')
-        sql = f"select avg(`{field}`) from `{self.__class__.tablename}` "
-        sql += self.__build_where_sql()
-        sql += self.__build_other_sql()
-        self.__sql = sql.strip()
+        self.__sql = self.__build_simple_sql(field, 'avg')
         return self.__conn.average(self.__sql)
 
     def exists(self):
         if self.__class__.tablename is None:
-            raise('missing table name')
-        sql = f"select exists(select `{self.__class__.primary_key}` from `{self.__class__.tablename}` "
-        sql += self.__build_where_sql()
-        sql += self.__build_other_sql()
-        sql = sql.strip()
-        sql += f")"
-        self.__sql = sql
-        return self.__conn.exists(self.__sql)
+            raise Exception('missing table name')
+        sql = f"select exists({self.sql()})"
+        self.__sql = sql.strip()
+        return self.__conn.exists(sql)
 
     def column(self, field):
-        if self.__class__.tablename is None:
-            raise('missing table name')
-        sql = f"select `{field}` from `{self.__class__.tablename}` "
-        sql += self.__build_where_sql()
-        sql += self.__build_other_sql()
-        self.__sql = sql.strip()
+        self.__sql = self.__build_simple_sql(field)
         result = self.__conn.column(self.__sql)
-        return [item[field] for item in result]
+        res = []
+        for item in result:
+            for _, v in item.items():
+                res.append(v)
+        return res
 
     def scalar(self, field):
-        if self.__class__.tablename is None:
-            raise('missing table name')
         self.__limit = 1
-        sql = f"select `{field}` from `{self.__class__.tablename}` "
-        sql += self.__build_where_sql()
-        sql += self.__build_other_sql()
-        self.__sql = sql.strip()
+        self.__sql = self.__build_simple_sql(field)
         result = self.__conn.scalar(self.__sql)
         if result is None:
             return None
-        return result[field]
+        for _, v in result.items():
+            return v
 
     def batch(self, size=100, raw=False):
         if self.__class__.tablename is None:
-            raise('missing table name')
+            raise Exception('missing table name')
         total = self.count()
         sql = self.sql()
         batch = self.__conn.batch(sql)
