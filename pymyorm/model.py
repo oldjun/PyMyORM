@@ -1,4 +1,5 @@
 from pymyorm.local import local
+import pprint
 
 
 class Model(object):
@@ -43,6 +44,9 @@ class Model(object):
             raise Exception(f"object has no attribute '{name}'")
         return value
 
+    def __setitem__(self, key, value):
+        self.__dict__['_Model__new_fields'][key] = value
+
     def __getitem__(self, item):
         return getattr(self, item)
 
@@ -57,6 +61,13 @@ class Model(object):
         fields.update(self.__old_fields)
         fields.update(self.__new_fields)
         return str(fields)
+
+    def print(self):
+        fields = {}
+        fields.update(self.__old_fields)
+        fields.update(self.__new_fields)
+        pp = pprint.PrettyPrinter(indent=2)
+        pp.pprint(fields)
 
     @classmethod
     def find(cls):

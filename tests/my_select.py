@@ -1,6 +1,7 @@
 from pymyorm.database import Database
 from config import db
 from models.user import User
+import pprint
 
 
 if __name__ == '__main__':
@@ -8,7 +9,7 @@ if __name__ == '__main__':
     Database.connect(**db)
 
     # case 1
-    one = User.find().where(name='lucy').one()
+    one = User.find().where(name='lucy', gender=User.gender_female).one(raw=True)
     print(one)
 
     # # case 2
