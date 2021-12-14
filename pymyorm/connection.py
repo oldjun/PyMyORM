@@ -65,10 +65,10 @@ class Connection(object):
         try:
             if self.__debug:
                 print(f"batch sql: {sql}")
-                self.__conn.autocommit(self.__autocommit)
-                cursor = self.__conn.cursor()
-                cursor.execute(sql)
-                return Batch(cursor)
+            self.__conn.autocommit(self.__autocommit)
+            cursor = self.__conn.cursor()
+            cursor.execute(sql)
+            return Batch(cursor)
         except Exception as e:
             raise e
 
