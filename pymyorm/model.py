@@ -89,6 +89,14 @@ class Model(object):
         sql = f"truncate table `{model.__class__.tablename}`"
         return model.__conn.execute(sql.strip())
 
+    @classmethod
+    def schema(cls):
+        model = cls()
+        database = model.__conn._Connection__config['database']
+        table = model.tablename
+        sql = f"select column_name,column_key,data_type,extra,column_comment from information_schema.columns where table_schema='{database}' and table_name='{table}'"
+        return model.__conn.fetchall(sql)
+
     def save(self):
         if self.__old_fields.get(self.__class__.primary_key) is None:
             fields = ','.join([f"`{item}`" for item in self.__new_fields.keys()])
@@ -254,7 +262,7 @@ class Model(object):
                 if len(arr) == 2:
                     pass
                 if len(arr) == 3:
-                    if arr[1] != 'as':
+                    if arr[1].lower() != 'as':
                         raise Exception(f'select statement error: {arg}')
                     del arr[1]
                 field = f"{arr[0]} as `{arr[1]}`"
