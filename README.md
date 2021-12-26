@@ -115,6 +115,51 @@ Database.connect(**config)
 Database.execute(sql)
 ```
 
+```python
+from pymyorm.database import Database
+from config import db
+
+Database.connect(**db)
+sql = "select * from t_user"
+all = Database.query(sql)
+for one in all:
+    print(one)
+```
+
+### tables
+
+```python
+from pymyorm.database import Database
+from config import db
+
+Database.connect(**db)
+tables = Database.tables()
+for table in tables:
+    print(table)
+```
+
+### schema
+
+```python
+from pymyorm.database import Database
+from config import db
+
+Database.connect(**db)
+schemas = Database.schema('t_user')
+for schema in schemas:
+    print(schema)
+```
+
+### reflection
+
+```python
+from pymyorm.database import Database
+from config import db
+
+Database.connect(**db)
+Database.model(table='t_user', filename='models/user.py')
+```
+
 ### select
 
 find one user which name is 'ping'
