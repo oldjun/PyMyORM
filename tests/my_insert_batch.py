@@ -18,3 +18,11 @@ if __name__ == '__main__':
         ('vera', '18976646666', 100, 2),
     ]
     User.insert(fields, values)
+    # for value in values:
+    #     user = User()
+    #     user.name = value[0]
+    #     user.phone = value[1]
+    #     user.money = value[2]
+    #     user.gender = value[3]
+    #     user.save()
+    #     print(user.id)

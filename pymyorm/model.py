@@ -106,7 +106,8 @@ class Model(object):
             sql = f"insert into `{self.__class__.tablename}`({fields}) values({values})"
             self.__sql = sql
             last_insert_id = self.__conn.insert(sql)
-            self.__new_fields[self.__class__.primary_key] = last_insert_id
+            if self.__class__.primary_key not in self.__new_fields:
+                self.__new_fields[self.__class__.primary_key] = last_insert_id
         else:
             update_str = ','.join([f"`{k}`='{v}'" for (k, v) in self.__new_fields.items()])
             sql = f"update `{self.__class__.tablename}` set {update_str} where `{self.__class__.primary_key}`='{self.__old_fields.get(self.__class__.primary_key)}'"
