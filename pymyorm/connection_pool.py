@@ -10,6 +10,7 @@ class ConnectionPool(object):
         self.__size = 0
         self.__pool = None
         self.__debug = False
+        self.__ping = 3600
 
     def create(self, host, port, user, password, database, charset='utf8', debug=False):
         if self.__pool is not None:
@@ -24,6 +25,7 @@ class ConnectionPool(object):
         for _ in range(0, self.__size):
             conn = Connection(host=host, port=port, user=user, password=password, database=database, charset=charset)
             conn.open(self.__debug)
+            conn.set_ping(self.__ping)
             self.put(conn)
 
     def put(self, conn):
@@ -41,6 +43,7 @@ class ConnectionPool(object):
             if self.__debug:
                 print('get connection from pool')
             conn = self.__pool.get()
+            conn.ping()
             return conn
         except Exception as e:
             if self.__debug:
@@ -49,3 +52,6 @@ class ConnectionPool(object):
 
     def size(self, size):
         self.__size = size
+
+    def ping(self, seconds):
+        self.__ping = seconds

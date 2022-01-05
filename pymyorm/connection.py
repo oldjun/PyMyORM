@@ -1,4 +1,5 @@
 import pymysql
+import time
 from pymysql import cursors
 from pymyorm.batch import Batch
 
@@ -10,6 +11,8 @@ class Connection(object):
         self.__debug = False
         self.__config = dict(host=host, port=port, user=user, password=password, database=database, charset=charset)
         self.__autocommit = True
+        self.__last_ping_time = int(time.time())
+        self.__ping = 3600
 
     def __del__(self):
         self.close()
@@ -34,6 +37,21 @@ class Connection(object):
                 print('mysql connection closed')
             self.__conn.close()
             self.__conn = None
+
+    def set_ping(self, seconds):
+        self.__ping = seconds
+
+    def ping(self):
+        current_time = int(time.time())
+        if current_time - self.__last_ping_time > self.__ping:
+            try:
+                if self.__debug:
+                    print('conn ping')
+                self.__conn.ping()
+            except Exception as e:
+                if self.__debug:
+                    print(str(e))
+        self.__last_ping_time = int(time.time())
 
     def fetchone(self, sql):
         try:
