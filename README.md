@@ -521,7 +521,7 @@ except Exception as e:
 ### ping
 
 As mysql server's default wait timeout is 28800 seconds, it means that after 8 hours if connection is stay sleep, the server will disconnect it.
-to prevent this problem, each connection should have ability to auto reconnect, by default each connection will ping mysql server after 3600 seconds idle or sleep.
+to prevent this problem, each connection should have ability to auto reconnect, by default PyMyORM's each connection will ping mysql server after 3600 seconds idle or sleep.
 you can change the ping interval by the flow code slice:
 
 ```python
