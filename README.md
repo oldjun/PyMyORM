@@ -518,6 +518,28 @@ except Exception as e:
     raise e
 ```
 
+### auto reconnect
+
+As mysql server's default wait timeout is 28800 seconds, it means that after 8 hours if connection is stay sleep, the server will disconnect it.
+to prevent this problem, each connection should have ability to auto reconnect, by default each connection will ping mysql server after 3600 seconds idle or sleep.
+you can change the ping interval by the flow code slice:
+
+```python
+pool = ConnectionPool()
+pool.size(size=8)
+pool.ping(seconds=7200)
+pool.create(**db)
+```
+
+as you see, it will change the default ping interval time from 3600 to 7200 seconds. how much long about the ping interval depends on your mysql server's wait timeout configuration. you should set the ping interval less than your server's wait timeout.
+login your mysql server , and run the following sql to see the wait timeout
+
+```sql
+show variables like '%wait_timeout%';
+```
+
+mysql server maybe reboot because some reason, but don't worry about it. PyMyORM has take care about this situation, each connetion will auto re-connect immediately if the connection has gone.
+
 ### connection pool
 
 By default PyMyORM works at single thread, however when we develop a web application based on flask, we would like to make PyMyORM support multi-threading.
