@@ -518,7 +518,7 @@ except Exception as e:
     raise e
 ```
 
-### auto reconnect
+### ping
 
 As mysql server's default wait timeout is 28800 seconds, it means that after 8 hours if connection is stay sleep, the server will disconnect it.
 to prevent this problem, each connection should have ability to auto reconnect, by default each connection will ping mysql server after 3600 seconds idle or sleep.
@@ -538,7 +538,10 @@ login your mysql server , and run the following sql to see the wait timeout
 show variables like '%wait_timeout%';
 ```
 
-mysql server maybe reboot because some reason, but don't worry about it. PyMyORM has take care about this situation, each connetion will auto re-connect immediately if the connection has gone.
+### auto reconnect
+
+mysql server maybe reboot because some reason, but don't worry about it.
+PyMyORM has take care about this situation, each connetion will auto re-connect immediately if the connection has gone.
 
 ### connection pool
 
