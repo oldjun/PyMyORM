@@ -23,6 +23,7 @@ class Connection(object):
         try:
             if self.__debug:
                 print(str(self.__config))
+            self.__autocommit = True
             self.__conn = pymysql.connect(**self.__config, cursorclass=cursors.DictCursor)
             if self.__debug:
                 print('mysql connect success')
@@ -63,8 +64,8 @@ class Connection(object):
             result = cursor.fetchone()
             cursor.close()
             return result
-        except Exception as e:
-            raise e
+        except pymysql.OperationalError:
+            self.open(self.__debug)
 
     def fetchall(self, sql):
         try:
@@ -76,8 +77,8 @@ class Connection(object):
             result = cursor.fetchall()
             cursor.close()
             return result
-        except Exception as e:
-            raise e
+        except pymysql.OperationalError:
+            self.open(self.__debug)
 
     def batch(self, sql):
         try:
@@ -87,8 +88,8 @@ class Connection(object):
             cursor = self.__conn.cursor()
             cursor.execute(sql)
             return Batch(cursor)
-        except Exception as e:
-            raise e
+        except pymysql.OperationalError:
+            self.open(self.__debug)
 
     def insert(self, sql):
         try:
@@ -100,8 +101,8 @@ class Connection(object):
             last_insert_id = cursor.lastrowid
             cursor.close()
             return last_insert_id
-        except Exception as e:
-            raise e
+        except pymysql.OperationalError:
+            self.open(self.__debug)
 
     def insert_batch(self, sql, data):
         try:
@@ -113,8 +114,8 @@ class Connection(object):
             last_insert_id = cursor.lastrowid
             cursor.close()
             return last_insert_id
-        except Exception as e:
-            raise e
+        except pymysql.OperationalError:
+            self.open(self.__debug)
 
     def execute(self, sql):
         try:
@@ -125,8 +126,8 @@ class Connection(object):
             num = cursor.execute(sql)
             cursor.close()
             return num
-        except Exception as e:
-            raise e
+        except pymysql.OperationalError:
+            self.open(self.__debug)
 
     def count(self, sql):
         try:
@@ -140,8 +141,8 @@ class Connection(object):
                 total = v
             cursor.close()
             return total
-        except Exception as e:
-            raise e
+        except pymysql.OperationalError:
+            self.open(self.__debug)
 
     def min(self, sql):
         try:
@@ -155,8 +156,8 @@ class Connection(object):
                 total = v
             cursor.close()
             return total
-        except Exception as e:
-            raise e
+        except pymysql.OperationalError:
+            self.open(self.__debug)
 
     def max(self, sql):
         try:
@@ -170,8 +171,8 @@ class Connection(object):
                 total = v
             cursor.close()
             return total
-        except Exception as e:
-            raise e
+        except pymysql.OperationalError:
+            self.open(self.__debug)
 
     def average(self, sql):
         try:
@@ -185,8 +186,8 @@ class Connection(object):
                 total = v
             cursor.close()
             return total
-        except Exception as e:
-            raise e
+        except pymysql.OperationalError:
+            self.open(self.__debug)
 
     def exists(self, sql):
         try:
@@ -200,8 +201,8 @@ class Connection(object):
                 total = v
             cursor.close()
             return total == 1
-        except Exception as e:
-            raise e
+        except pymysql.OperationalError:
+            self.open(self.__debug)
 
     def column(self, sql):
         try:
@@ -212,8 +213,8 @@ class Connection(object):
             result = cursor.fetchall()
             cursor.close()
             return result
-        except Exception as e:
-            raise e
+        except pymysql.OperationalError:
+            self.open(self.__debug)
 
     def scalar(self, sql):
         try:
@@ -224,8 +225,8 @@ class Connection(object):
             result = cursor.fetchone()
             cursor.close()
             return result
-        except Exception as e:
-            raise e
+        except pymysql.OperationalError:
+            self.open(self.__debug)
 
     def begin(self):
         try:
@@ -236,8 +237,8 @@ class Connection(object):
             cursor.execute(sql)
             cursor.close()
             self.__autocommit = False
-        except Exception as e:
-            raise e
+        except pymysql.OperationalError:
+            self.open(self.__debug)
 
     def rollback(self):
         try:
@@ -248,8 +249,8 @@ class Connection(object):
             cursor.execute(sql)
             cursor.close()
             self.__autocommit = True
-        except Exception as e:
-            raise e
+        except pymysql.OperationalError:
+            self.open(self.__debug)
 
     def commit(self):
         try:
@@ -260,8 +261,8 @@ class Connection(object):
             cursor.execute(sql)
             cursor.close()
             self.__autocommit = True
-        except Exception as e:
-            raise e
+        except pymysql.OperationalError:
+            self.open(self.__debug)
 
     def savepoint(self, identifier):
         try:
@@ -271,8 +272,8 @@ class Connection(object):
             cursor = self.__conn.cursor()
             cursor.execute(sql)
             cursor.close()
-        except Exception as e:
-            raise e
+        except pymysql.OperationalError:
+            self.open(self.__debug)
 
     def rollback_savepoint(self, identifier):
         try:
@@ -282,8 +283,8 @@ class Connection(object):
             cursor = self.__conn.cursor()
             cursor.execute(sql)
             cursor.close()
-        except Exception as e:
-            raise e
+        except pymysql.OperationalError:
+            self.open(self.__debug)
 
     def release_savepoint(self, identifier):
         try:
@@ -293,5 +294,5 @@ class Connection(object):
             cursor = self.__conn.cursor()
             cursor.execute(sql)
             cursor.close()
-        except Exception as e:
-            raise e
+        except pymysql.OperationalError:
+            self.open(self.__debug)
