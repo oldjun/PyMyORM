@@ -33,12 +33,12 @@ class Database(object):
         return local.conn.fetchall(sql)
 
     @staticmethod
-    def model(table, filename):
-        file = filename.split('/')[-1]
+    def model(table, model):
+        file = model.split('/')[-1]
         file = file.split('.')[0]
-        model = ''.join([word.capitalize() for word in file.split('_')])
+        cls = ''.join([word.capitalize() for word in file.split('_')])
         str = f"from pymyorm.model import Model\n\n\n"
-        str += f"class {model}(Model):\n"
+        str += f"class {cls}(Model):\n"
         str += f"\ttablename = '{table}'\n"
         datetime_fields = []
         decimal_fields = []
@@ -59,7 +59,7 @@ class Database(object):
             decimal_fields_str = ','.join([f"'{fields}'" for fields in decimal_fields])
             str += f"\tdecimal_fields = [{decimal_fields_str}]\n"
 
-        filename = os.path.join(os.getcwd(), filename)
+        filename = os.path.join(os.getcwd(), model)
         path = os.path.dirname(filename)
         if not os.path.exists(path):
             os.makedirs(path)
