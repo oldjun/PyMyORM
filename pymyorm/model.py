@@ -159,6 +159,12 @@ class Model(object):
                 for v in cond['value']:
                     v_list.append(f"'{v}'")
                 cond_list.append(f"{cond['field']} {cond['op']} ({','.join(v_list)})")
+            elif cond['op'] == 'between':
+                if not isinstance(cond['value'], list):
+                    raise Exception('condition in or not in should be a list')
+                if len(cond['value']) != 2:
+                    raise Exception('condition should have two element')
+                cond_list.append(f"{cond['field']} between '{cond['value'][0]}' and '{cond['value'][1]}'")
         where_sql = ' and '.join(cond_list)
         if where_sql:
             sql = f"where {where_sql} "
@@ -325,8 +331,10 @@ class Model(object):
 
             if field.find('.'):
                 field = '.'.join([f"`{v}`" for v in field.split('.')])
+            op = args[1].lower()
+            op = ' '.join([o for o in op.split()])
             cond = dict()
-            cond['op'] = args[1]
+            cond['op'] = op
             cond['field'] = field
             cond['value'] = value
             self.__where.append(cond)
