@@ -58,6 +58,8 @@ class Connection(object):
         try:
             if self.__debug:
                 print(f"sql: {sql}")
+            if self.__conn is None:
+                self.open(self.__debug)
             self.__conn.autocommit(self.__autocommit)
             cursor = self.__conn.cursor()
             cursor.execute(sql)
@@ -71,6 +73,8 @@ class Connection(object):
         try:
             if self.__debug:
                 print(f"sql: {sql}")
+            if self.__conn is None:
+                self.open(self.__debug)
             self.__conn.autocommit(self.__autocommit)
             cursor = self.__conn.cursor()
             cursor.execute(sql)
@@ -84,6 +88,8 @@ class Connection(object):
         try:
             if self.__debug:
                 print(f"batch sql: {sql}")
+            if self.__conn is None:
+                self.open(self.__debug)
             self.__conn.autocommit(self.__autocommit)
             cursor = self.__conn.cursor()
             cursor.execute(sql)
@@ -95,6 +101,8 @@ class Connection(object):
         try:
             if self.__debug:
                 print(f"sql: {sql}")
+            if self.__conn is None:
+                self.open(self.__debug)
             self.__conn.autocommit(self.__autocommit)
             cursor = self.__conn.cursor()
             cursor.execute(sql)
@@ -108,6 +116,8 @@ class Connection(object):
         try:
             if self.__debug:
                 print(f"sql: {sql}")
+            if self.__conn is None:
+                self.open(self.__debug)
             self.__conn.autocommit(self.__autocommit)
             cursor = self.__conn.cursor()
             cursor.executemany(sql, data)
@@ -121,6 +131,8 @@ class Connection(object):
         try:
             if self.__debug:
                 print(f"sql: {sql}")
+            if self.__conn is None:
+                self.open(self.__debug)
             self.__conn.autocommit(self.__autocommit)
             cursor = self.__conn.cursor()
             num = cursor.execute(sql)
@@ -133,6 +145,9 @@ class Connection(object):
         try:
             if self.__debug:
                 print(f"sql: {sql}")
+            if self.__conn is None:
+                self.open(self.__debug)
+            self.__conn.autocommit(self.__autocommit)
             cursor = self.__conn.cursor()
             cursor.execute(sql)
             data = cursor.fetchone()
@@ -148,6 +163,9 @@ class Connection(object):
         try:
             if self.__debug:
                 print(f"sql: {sql}")
+            if self.__conn is None:
+                self.open(self.__debug)
+            self.__conn.autocommit(self.__autocommit)
             cursor = self.__conn.cursor()
             cursor.execute(sql)
             data = cursor.fetchone()
@@ -163,6 +181,9 @@ class Connection(object):
         try:
             if self.__debug:
                 print(f"sql: {sql}")
+            if self.__conn is None:
+                self.open(self.__debug)
+            self.__conn.autocommit(self.__autocommit)
             cursor = self.__conn.cursor()
             cursor.execute(sql)
             data = cursor.fetchone()
@@ -178,6 +199,9 @@ class Connection(object):
         try:
             if self.__debug:
                 print(f"sql: {sql}")
+            if self.__conn is None:
+                self.open(self.__debug)
+            self.__conn.autocommit(self.__autocommit)
             cursor = self.__conn.cursor()
             cursor.execute(sql)
             data = cursor.fetchone()
@@ -193,6 +217,9 @@ class Connection(object):
         try:
             if self.__debug:
                 print(f"sql: {sql}")
+            if self.__conn is None:
+                self.open(self.__debug)
+            self.__conn.autocommit(self.__autocommit)
             cursor = self.__conn.cursor()
             cursor.execute(sql)
             data = cursor.fetchone()
@@ -208,6 +235,9 @@ class Connection(object):
         try:
             if self.__debug:
                 print(f"sql: {sql}")
+            if self.__conn is None:
+                self.open(self.__debug)
+            self.__conn.autocommit(self.__autocommit)
             cursor = self.__conn.cursor()
             cursor.execute(sql)
             result = cursor.fetchall()
@@ -220,6 +250,9 @@ class Connection(object):
         try:
             if self.__debug:
                 print(f"sql: {sql}")
+            if self.__conn is None:
+                self.open(self.__debug)
+            self.__conn.autocommit(self.__autocommit)
             cursor = self.__conn.cursor()
             cursor.execute(sql)
             result = cursor.fetchone()
@@ -233,6 +266,8 @@ class Connection(object):
             sql = "begin"
             if self.__debug:
                 print(f"sql: {sql}")
+            if self.__conn is None:
+                self.open(self.__debug)
             cursor = self.__conn.cursor()
             cursor.execute(sql)
             cursor.close()
