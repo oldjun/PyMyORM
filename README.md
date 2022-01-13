@@ -358,6 +358,15 @@ from models.user import User
 count = User.find().where(status=0).count()
 ```
 
+### sum
+
+sum of user's money
+
+```python
+from models.user import User
+count = User.find().sum('money')
+```
+
 ### min
 
 find the minimal money of users, return the minimal money rather than the user data
