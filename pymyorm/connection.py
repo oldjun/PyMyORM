@@ -159,6 +159,24 @@ class Connection(object):
         except pymysql.OperationalError:
             self.open(self.__debug)
 
+    def sum(self, sql):
+        try:
+            if self.__debug:
+                print(f"sql: {sql}")
+            if self.__conn is None:
+                self.open(self.__debug)
+            self.__conn.autocommit(self.__autocommit)
+            cursor = self.__conn.cursor()
+            cursor.execute(sql)
+            data = cursor.fetchone()
+            total = 0
+            for v in data.values():
+                total = v
+            cursor.close()
+            return total
+        except pymysql.OperationalError:
+            self.open(self.__debug)
+
     def min(self, sql):
         try:
             if self.__debug:

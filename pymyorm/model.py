@@ -426,6 +426,10 @@ class Model(object):
         sql += self.__build_other_sql()
         return sql.strip()
 
+    def sum(self, field):
+        self.__sql = self.__build_simple_sql(field, 'sum')
+        return self.__conn.sum(self.__sql)
+
     def min(self, field):
         self.__sql = self.__build_simple_sql(field, 'min')
         return self.__conn.min(self.__sql)
