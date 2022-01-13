@@ -364,7 +364,7 @@ sum of user's money
 
 ```python
 from models.user import User
-count = User.find().sum('money')
+money = User.find().sum('money')
 ```
 
 ### min
