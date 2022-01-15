@@ -397,7 +397,7 @@ class Model(object):
         sql += self.__build_where_sql()
         sql += self.__build_other_sql()
         if self.__group:
-            self.__sql = f"select count(*) from ({sql.strip()}) as `_t`"
+            self.__sql = f"select count(*) from ({sql.strip()}) as `t`"
         else:
             self.__sql = sql.strip()
         return self.__conn.count(self.__sql)
