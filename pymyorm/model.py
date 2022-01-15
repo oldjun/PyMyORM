@@ -16,8 +16,8 @@ class Model(object):
         self.__select = []
         self.__update = {}
         self.__where = []
-        self.__order = {}
-        self.__group = {}
+        self.__order = ''
+        self.__group = ''
         self.__having = ''
         self.__offset = ''
         self.__limit = ''
@@ -354,7 +354,7 @@ class Model(object):
         return self
 
     def group(self, group):
-        self.__group = group
+        self.__group = f"`{group}`"
         return self
 
     def having(self, *args):
@@ -396,7 +396,10 @@ class Model(object):
         sql += self.__build_join_sql()
         sql += self.__build_where_sql()
         sql += self.__build_other_sql()
-        self.__sql = sql.strip()
+        if self.__group:
+            self.__sql = f"select count(*) from ({sql.strip()}) as `_t`"
+        else:
+            self.__sql = sql.strip()
         return self.__conn.count(self.__sql)
 
     def __build_simple_sql(self, field, func=''):

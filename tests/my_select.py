@@ -9,7 +9,7 @@ if __name__ == '__main__':
     Database.connect(**db)
 
     # case 1
-    one = User.find().where(name='lucy', gender=User.gender_female).one(raw=True)
+    one = User.find().where(name='lily', gender=User.gender_female).one(raw=True)
     print(one)
 
     # # case 2

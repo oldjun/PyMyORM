@@ -7,5 +7,5 @@ if __name__ == '__main__':
 
     Database.connect(**db)
 
-    gender = User.find().group('gender').column('gender')
-    print(gender)
+    count = User.find().group('gender').count()
+    print(count)
