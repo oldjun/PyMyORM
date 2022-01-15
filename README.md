@@ -428,6 +428,16 @@ for one in all:
     print(one)
 ```
 
+### group count
+
+group the users by gender, and get the total number of groups
+
+```python
+from models.user import User
+count = User.find().group('gender').count()
+print(count)
+```
+
 ### truncate
 
 truncate the user table, don't do this if you don't know what you are doing.
