@@ -434,8 +434,8 @@ group the users by gender, and get the total number of groups
 
 ```python
 from models.user import User
-count = User.find().group('gender').count()
-print(count)
+total = User.find().group('gender').count()
+print(total)
 ```
 
 ### truncate
