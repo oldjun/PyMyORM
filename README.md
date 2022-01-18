@@ -217,29 +217,7 @@ for all in batch:
 
 ### where
 
-we may filter dataset by passing several where conditions like below
-
-```python
-from models.user import User
-model = User.find()
-if id:
-    model.where(id=id)
-if name:
-    model.where(name=name)
-if phone:
-    model.where(phone=phone)
-if status:
-    model.where(status=status)
-```
-as you see, there are too more `if` clause conditions, it looks ugly.
-to enhance the code more readable, we can rewrite the code like this:
-
-```python
-from models.user import User
-model = User.find().where(id=id, name=name, phone=phone, status=status)
-```
-
-`where` function will auto ignore empty string value or None value.
+where condition support ternary operator: =, !=, <, <=, >=, >, in, not in, like, not like, is, is not, between
 
 ### update
 

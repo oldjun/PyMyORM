@@ -159,12 +159,18 @@ class Model(object):
                 for v in cond['value']:
                     v_list.append(f"'{v}'")
                 cond_list.append(f"{cond['field']} {cond['op']} ({','.join(v_list)})")
+            elif cond['op'] in ['is', 'is not']:
+                if cond['value'] is not None:
+                    raise Exception(f"syntax error: value should be None")
+                cond_list.append(f"{cond['field']} {cond['op']} null")
             elif cond['op'] == 'between':
                 if not isinstance(cond['value'], list):
                     raise Exception('condition in or not in should be a list')
                 if len(cond['value']) != 2:
                     raise Exception('condition should have two element')
                 cond_list.append(f"{cond['field']} between '{cond['value'][0]}' and '{cond['value'][1]}'")
+            else:
+                raise Exception(f"syntax error: operator not supported {cond['op']}")
         where_sql = ' and '.join(cond_list)
         if where_sql:
             sql = f"where {where_sql} "
@@ -326,9 +332,6 @@ class Model(object):
                 raise Exception('where statement error')
             field = args[0]
             value = args[2]
-            if value == '' or value is None:
-                return self
-
             if field.find('.'):
                 field = '.'.join([f"`{v}`" for v in field.split('.')])
             op = args[1].lower()
@@ -340,8 +343,6 @@ class Model(object):
             self.__where.append(cond)
         if len(kwargs) > 0:
             for k, v in kwargs.items():
-                if v == '' or v is None:
-                    continue
                 cond = dict()
                 cond['op'] = '='
                 cond['field'] = f"`{k}`"
@@ -354,7 +355,7 @@ class Model(object):
         return self
 
     def group(self, group):
-        self.__group = f"`{group}`"
+        self.__group = f"{group}"
         return self
 
     def having(self, *args):

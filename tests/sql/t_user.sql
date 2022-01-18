@@ -5,6 +5,7 @@ create table `t_user` (
     `money` decimal(10,2) not null default 0,
     `gender` tinyint unsigned not null default 0,
     `status` tinyint unsigned not null default 0,
+    `brief` text null,
     `time` timestamp not null default current_timestamp,
     primary key(`id`),
     unique key `idx_name` (`name`),
