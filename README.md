@@ -217,7 +217,7 @@ for all in batch:
 
 ### where
 
-where condition support ternary operator: =, !=, <, <=, >=, >, in, not in, like, not like, is, is not, between
+where condition support operator: =, !=, <, <=, >=, >, in, not in, like, not like, is, is not, between
 
 ### update
 
