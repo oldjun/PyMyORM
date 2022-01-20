@@ -33,7 +33,8 @@ class Model(object):
         if name.find('_Model__') >= 0:
             self.__dict__[name] = value
         else:
-            self.__dict__['_Model__new_fields'][name] = value
+            if value is not None:
+                self.__dict__['_Model__new_fields'][name] = value
 
     def __getattr__(self, name):
         if name in self.__new_fields:
@@ -110,9 +111,10 @@ class Model(object):
                 self.__new_fields[self.__class__.primary_key] = last_insert_id
         else:
             update_str = ','.join([f"`{k}`='{v}'" for (k, v) in self.__new_fields.items()])
-            sql = f"update `{self.__class__.tablename}` set {update_str} where `{self.__class__.primary_key}`='{self.__old_fields.get(self.__class__.primary_key)}'"
-            self.__sql = sql
-            self.__conn.execute(sql)
+            if update_str != '':
+                sql = f"update `{self.__class__.tablename}` set {update_str} where `{self.__class__.primary_key}`='{self.__old_fields.get(self.__class__.primary_key)}'"
+                self.__sql = sql
+                self.__conn.execute(sql)
 
     def sql(self):
         sql = self.__build_select_sql()

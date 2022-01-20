@@ -9,3 +9,7 @@ if __name__ == '__main__':
 
     total = User.find().where('brief', 'is', None).count()
     print(total)
+
+    one = User.find().where(name='sean').one()
+    one.brief = '123'
+    one.save()
