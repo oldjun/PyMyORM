@@ -11,5 +11,6 @@ if __name__ == '__main__':
     print(total)
 
     one = User.find().where(name='sean').one()
+    one.name = None
     one.brief = '123'
     one.save()
