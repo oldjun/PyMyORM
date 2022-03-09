@@ -157,7 +157,7 @@ from pymyorm.database import Database
 from config import db
 
 Database.connect(**db)
-Database.model(table='t_user', model='models/user.py')
+Database.reflect(table='t_user', model='models/user.py')
 ```
 
 ### select
