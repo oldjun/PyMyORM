@@ -7,7 +7,7 @@ if __name__ == '__main__':
 
     Database.connect(**db)
 
-    batch = User.find().batch(size=100)
+    batch = User.find().batch(size=2)
     for all in batch:
         for one in all:
             print(one)

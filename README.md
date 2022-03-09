@@ -73,19 +73,7 @@ from pymyorm.model import Model
 
 class User(Model):
     tablename = 't_user'
-    primary_key = 'this is table primary key'
-```
-
-if your table contains at least one datetime column or decimal column, you probably like to auto format the column's value from datetime to string,
-or from decimal to float, you can do it like this
-
-```python
-from pymyorm.model import Model
-
-class User(Model):
-    tablename = 't_user'
-    datetime_fields = ['create_time', 'update_time']
-    decimal_fields = ['money']
+    primary_key = 'primary key'
 ```
 
 ### connect
@@ -218,6 +206,12 @@ for all in batch:
 ### where
 
 where condition support operator: =, !=, <, <=, >=, >, in, not in, like, not like, is, is not, between
+,and also support plain expression:
+
+```python
+from models.user import User
+one = User.find().where("name='jack' or status=1").one()
+```
 
 ### update
 

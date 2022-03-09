@@ -1,3 +1,7 @@
+import datetime
+import decimal
+
+
 class Batch(object):
 
     def __init__(self, cursor):
@@ -16,13 +20,15 @@ class Batch(object):
 
         all = self.__cursor.fetchmany(self.__size)
         self.__left -= self.__size
-        if self.__model.datetime_fields or self.__model.decimal_fields:
-            for one in all:
-                for k, v in one.items():
-                    if k in self.__model.datetime_fields:
-                        one[k] = v.strftime('%Y-%m-%d %H:%M:%S')
-                    elif k in self.__model.decimal_fields:
-                        one[k] = float(v)
+        for one in all:
+            for k, v in one.items():
+                if isinstance(v, datetime.datetime):
+                    one[k] = v.strftime('%Y-%m-%d %H:%M:%S')
+                elif isinstance(v, datetime.date):
+                    one[k] = v.strftime('%Y-%m-%d')
+                elif isinstance(v, decimal.Decimal):
+                    one[k] = float(v)
+
         if self.__raw:
             return all
 

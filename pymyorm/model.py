@@ -8,9 +8,6 @@ import pprint
 class Model(object):
     tablename = None
     primary_key = 'id'
-    datetime_fields = []
-    date_fields = []
-    decimal_fields = []
 
     def __init__(self, **kwargs) -> None:
         self.__conn = local.conn
@@ -175,6 +172,11 @@ class Model(object):
                 if len(cond['value']) != 2:
                     raise Exception('condition should have two element')
                 cond_list.append(f"{cond['field']} between '{cond['value'][0]}' and '{cond['value'][1]}'")
+            elif cond['op'] == '':
+                if len(self.__where) > 1:
+                    cond_list.append(f"({cond['value']})")
+                else:
+                    cond_list.append(f"{cond['value']}")
             else:
                 raise Exception(f"syntax error: operator not supported {cond['op']}")
         where_sql = ' and '.join(cond_list)
@@ -224,17 +226,13 @@ class Model(object):
         one = self.__conn.fetchone(sql)
         if one is None:
             return None
-        if self.datetime_fields or self.decimal_fields or self.date_fields:
-            for k, v in one.items():
-                if k in self.datetime_fields:
-                    if isinstance(v, datetime.datetime):
-                        one[k] = v.strftime('%Y-%m-%d %H:%M:%S')
-                elif k in self.decimal_fields:
-                    if isinstance(v, decimal.Decimal):
-                        one[k] = float(v)
-                elif k in self.date_fields:
-                    if isinstance(v, datetime.date):
-                        one[k] = v.strftime('%Y-%m-%d')
+        for k, v in one.items():
+            if isinstance(v, datetime.datetime):
+                one[k] = v.strftime('%Y-%m-%d %H:%M:%S')
+            elif isinstance(v, datetime.date):
+                one[k] = v.strftime('%Y-%m-%d')
+            elif isinstance(v, decimal.Decimal):
+                one[k] = float(v)
         if raw:
             return one
 
@@ -250,18 +248,14 @@ class Model(object):
         all = self.__conn.fetchall(sql)
         if all is None:
             return []
-        if self.datetime_fields or self.decimal_fields or self.date_fields:
-            for one in all:
-                for k, v in one.items():
-                    if k in self.datetime_fields:
-                        if isinstance(v, datetime.datetime):
-                            one[k] = v.strftime('%Y-%m-%d %H:%M:%S')
-                    elif k in self.decimal_fields:
-                        if isinstance(v, decimal.Decimal):
-                            one[k] = float(v)
-                    elif k in self.date_fields:
-                        if isinstance(v, datetime.date):
-                            one[k] = v.strftime('%Y-%m-%d')
+        for one in all:
+            for k, v in one.items():
+                if isinstance(v, datetime.datetime):
+                    one[k] = v.strftime('%Y-%m-%d %H:%M:%S')
+                elif isinstance(v, datetime.date):
+                    one[k] = v.strftime('%Y-%m-%d')
+                elif isinstance(v, decimal.Decimal):
+                    one[k] = float(v)
         if raw:
             return all
 
@@ -344,19 +338,26 @@ class Model(object):
 
     def where(self, *args, **kwargs):
         if len(args) > 0:
-            if len(args) != 3:
+            if len(args) == 1:
+                cond = dict()
+                cond['op'] = ''
+                cond['field'] = ''
+                cond['value'] = args[0]
+                self.__where.append(cond)
+            elif len(args) == 3:
+                field = args[0]
+                value = args[2]
+                if field.find('.'):
+                    field = '.'.join([f"`{v}`" for v in field.split('.')])
+                op = args[1].lower()
+                op = ' '.join([o for o in op.split()])
+                cond = dict()
+                cond['op'] = op
+                cond['field'] = field
+                cond['value'] = value
+                self.__where.append(cond)
+            else:
                 raise Exception('where statement error')
-            field = args[0]
-            value = args[2]
-            if field.find('.'):
-                field = '.'.join([f"`{v}`" for v in field.split('.')])
-            op = args[1].lower()
-            op = ' '.join([o for o in op.split()])
-            cond = dict()
-            cond['op'] = op
-            cond['field'] = field
-            cond['value'] = value
-            self.__where.append(cond)
         if len(kwargs) > 0:
             for k, v in kwargs.items():
                 cond = dict()

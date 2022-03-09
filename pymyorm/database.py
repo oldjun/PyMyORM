@@ -40,31 +40,12 @@ class Database(object):
         str = f"from pymyorm.model import Model\n\n\n"
         str += f"class {cls}(Model):\n"
         str += f"\ttablename = '{table}'\n"
-        datetime_fields = []
-        decimal_fields = []
-        date_fields = []
 
         all = Database.schema(table)
         for one in all:
             if one['column_key'] == 'PRI':
                 if one['column_name'] != 'id':
                     str += f"\tprimary_key = '{one['column_name']}'\n"
-            if one['data_type'] == 'timestamp':
-                datetime_fields.append(one['column_name'])
-            if one['data_type'] == 'decimal':
-                decimal_fields.append(one['column_name'])
-            if one['data_type'] == 'date':
-                date_fields.append(one['column_name'])
-
-        if datetime_fields:
-            datetime_fields_str = ','.join([f"'{fields}'" for fields in datetime_fields])
-            str += f"\tdatetime_fields = [{datetime_fields_str}]\n"
-        if decimal_fields:
-            decimal_fields_str = ','.join([f"'{fields}'" for fields in decimal_fields])
-            str += f"\tdecimal_fields = [{decimal_fields_str}]\n"
-        if date_fields:
-            date_fields_str = ','.join([f"'{fields}'" for fields in date_fields])
-            str += f"\tdate_fields = [{date_fields_str}]\n"
 
         filename = os.path.join(os.getcwd(), model)
         path = os.path.dirname(filename)
