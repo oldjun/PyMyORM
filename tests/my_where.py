@@ -8,11 +8,7 @@ if __name__ == '__main__':
     Database.connect(**db)
 
     name = 'jack'
-    status = 1
-    where = "name='%s' or status=%s" % (name, status)
-    # where2 = f"name='{name}' or status={status}"
-    print(where)
-    one = User.find().where("name='%s' or status=%s" % (name, status)).one()
-    print(one)
-
-    User.find().where("name='%s' or status=%s" % (name, status)).update(status=1)
+    gender = 2
+    all = User.find().where("name='%s' or gender=%s" % (name, gender)).all()
+    for one in all:
+        print(one)
