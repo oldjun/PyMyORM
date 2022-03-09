@@ -1,3 +1,6 @@
+import datetime
+import decimal
+
 from pymyorm.local import local
 import pprint
 
@@ -6,6 +9,7 @@ class Model(object):
     tablename = None
     primary_key = 'id'
     datetime_fields = []
+    date_fields = []
     decimal_fields = []
 
     def __init__(self, **kwargs) -> None:
@@ -220,12 +224,17 @@ class Model(object):
         one = self.__conn.fetchone(sql)
         if one is None:
             return None
-        if self.datetime_fields or self.decimal_fields:
+        if self.datetime_fields or self.decimal_fields or self.date_fields:
             for k, v in one.items():
                 if k in self.datetime_fields:
-                    one[k] = v.strftime('%Y-%m-%d %H:%M:%S')
+                    if isinstance(v, datetime.datetime):
+                        one[k] = v.strftime('%Y-%m-%d %H:%M:%S')
                 elif k in self.decimal_fields:
-                    one[k] = float(v)
+                    if isinstance(v, decimal.Decimal):
+                        one[k] = float(v)
+                elif k in self.date_fields:
+                    if isinstance(v, datetime.date):
+                        one[k] = v.strftime('%Y-%m-%d')
         if raw:
             return one
 
@@ -241,13 +250,18 @@ class Model(object):
         all = self.__conn.fetchall(sql)
         if all is None:
             return []
-        if self.datetime_fields or self.decimal_fields:
+        if self.datetime_fields or self.decimal_fields or self.date_fields:
             for one in all:
                 for k, v in one.items():
                     if k in self.datetime_fields:
-                        one[k] = v.strftime('%Y-%m-%d %H:%M:%S')
+                        if isinstance(v, datetime.datetime):
+                            one[k] = v.strftime('%Y-%m-%d %H:%M:%S')
                     elif k in self.decimal_fields:
-                        one[k] = float(v)
+                        if isinstance(v, decimal.Decimal):
+                            one[k] = float(v)
+                    elif k in self.date_fields:
+                        if isinstance(v, datetime.date):
+                            one[k] = v.strftime('%Y-%m-%d')
         if raw:
             return all
 

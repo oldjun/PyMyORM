@@ -3,6 +3,7 @@ create table `t_user` (
     `name` varchar(16) not null default '',
     `phone` varchar(16) not null default '',
     `money` decimal(10,2) not null default 0,
+    `birth` date,
     `gender` tinyint unsigned not null default 0,
     `status` tinyint unsigned not null default 0,
     `brief` text null,
