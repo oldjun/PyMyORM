@@ -1,3 +1,4 @@
+import logging
 from queue import Queue
 from pymyorm.singleton import Singleton
 from pymyorm.connection import Connection
@@ -31,23 +32,23 @@ class ConnectionPool(object):
     def put(self, conn):
         try:
             if self.__debug:
-                print('put connection into pool')
+                logging.info('put connection into pool')
             self.__pool.put(conn)
         except Exception as e:
             if self.__debug:
-                print('put connection into pool error')
+                logging.error(f'put connection into pool error: {str(e)}')
             raise e
 
     def get(self):
         try:
             if self.__debug:
-                print('get connection from pool')
+                logging.info('get connection from pool')
             conn = self.__pool.get()
             conn.ping()
             return conn
         except Exception as e:
             if self.__debug:
-                print('get connection from pool error')
+                logging.error(f'get connection from pool error: {str(e)}')
             raise e
 
     def size(self, size):

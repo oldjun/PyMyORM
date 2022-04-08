@@ -7,8 +7,12 @@ if __name__ == '__main__':
 
     Database.connect(**db)
 
-    name = 'jack'
-    gender = 2
-    all = User.find().where("name='%s' or gender=%s" % (name, gender)).all()
+    # name = 'jack'
+    # gender = 2
+    # all = User.find().where("name='%s' or gender=%s" % (name, gender)).all()
+    # for one in all:
+    #     print(one)
+
+    all = User.find().where(name='jack').all()
     for one in all:
         print(one)

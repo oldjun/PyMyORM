@@ -1,6 +1,6 @@
 import datetime
 import decimal
-
+from pymysql.converters import escape_string
 from pymyorm.local import local
 import pprint
 
@@ -35,7 +35,10 @@ class Model(object):
             self.__dict__[name] = value
         else:
             if value is not None:
-                self.__dict__['_Model__new_fields'][name] = value
+                if isinstance(value, str):
+                    self.__dict__['_Model__new_fields'][name] = escape_string(value)
+                else:
+                    self.__dict__['_Model__new_fields'][name] = value
 
     def __getattr__(self, name):
         if name in self.__new_fields:
@@ -154,12 +157,17 @@ class Model(object):
         cond_list = []
         for cond in self.__where:
             if cond['op'] in ['=', '!=', '>', '>=', '<', '<=', 'like', 'not like']:
-                cond_list.append(f"{cond['field']} {cond['op']} '{cond['value']}'")
+                value = cond['value']
+                if isinstance(value, str):
+                    value = escape_string(value)
+                cond_list.append(f"{cond['field']} {cond['op']} '{value}'")
             elif cond['op'] in ['in', 'not in']:
                 if not isinstance(cond['value'], list):
                     raise Exception('condition in or not in should be a list')
                 v_list = []
                 for v in cond['value']:
+                    if isinstance(v, str):
+                        v = escape_string(v)
                     v_list.append(f"'{v}'")
                 cond_list.append(f"{cond['field']} {cond['op']} ({','.join(v_list)})")
             elif cond['op'] in ['is', 'is not']:

@@ -13,7 +13,7 @@ if __name__ == '__main__':
 
     # case 2
     user = User()
-    user.name = 'vera3'
+    user.name = 'vera333'
     user.phone = '18976649999'
     user.money = 100
     user.save()
