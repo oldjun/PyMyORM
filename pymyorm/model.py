@@ -197,7 +197,7 @@ class Model(object):
         if self.__group:
             sql += f"group by {self.__group} "
         if self.__having:
-            sql += f"having {self.__having}"
+            sql += f"having {self.__having} "
         if self.__order:
             sql += f"order by {self.__order} "
         if self.__limit:

@@ -47,10 +47,9 @@ class Database(object):
                 if one['column_name'] != 'id':
                     str += f"\tprimary_key = '{one['column_name']}'\n"
 
-        filename = os.path.join(os.getcwd(), model)
-        path = os.path.dirname(filename)
+        path = os.path.dirname(model)
         if not os.path.exists(path):
             os.makedirs(path)
-        fp = open(filename, 'w', encoding='utf8')
+        fp = open(model, 'w', encoding='utf8')
         fp.write(str)
         fp.close()
