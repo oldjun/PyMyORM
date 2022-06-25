@@ -33,6 +33,8 @@ class ConnectionPool(object):
         try:
             if self.__debug:
                 logging.info('put connection into pool')
+            if self.__pool is None:
+                return
             self.__pool.put(conn)
         except Exception as e:
             if self.__debug:
@@ -43,6 +45,8 @@ class ConnectionPool(object):
         try:
             if self.__debug:
                 logging.info('get connection from pool')
+            if self.__pool is None:
+                return None
             conn = self.__pool.get()
             conn.ping()
             return conn
