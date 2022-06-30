@@ -44,6 +44,8 @@ class Connection(object):
         self.__ping = seconds
 
     def ping(self):
+        if self.__conn is None:
+            return
         current_time = int(time.time())
         if current_time - self.__last_ping_time > self.__ping:
             try:

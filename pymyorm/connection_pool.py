@@ -13,7 +13,7 @@ class ConnectionPool(object):
         self.__debug = False
         self.__ping = 3600
 
-    def create(self, host, port, user, password, database, charset='utf8', debug=False):
+    def create(self, host, port, user, password, database, charset='utf8', debug=False, lazy=True):
         if self.__pool is not None:
             del self.__pool
 
@@ -25,7 +25,8 @@ class ConnectionPool(object):
         self.__pool = Queue(self.__size)
         for _ in range(0, self.__size):
             conn = Connection(host=host, port=port, user=user, password=password, database=database, charset=charset)
-            conn.open(self.__debug)
+            if not lazy:
+                conn.open(self.__debug)
             conn.set_ping(self.__ping)
             self.put(conn)
 

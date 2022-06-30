@@ -6,9 +6,10 @@ import os
 class Database(object):
 
     @staticmethod
-    def connect(host, port, user, password, database, charset='utf8', debug=False):
+    def connect(host, port, user, password, database, charset='utf8', debug=False, lazy=True):
         conn = Connection(host=host, port=port, user=user, password=password, database=database, charset=charset)
-        conn.open(debug)
+        if not lazy:
+            conn.open(debug)
         local.conn = conn
 
     @staticmethod
