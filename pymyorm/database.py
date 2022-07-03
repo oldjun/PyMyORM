@@ -28,6 +28,13 @@ class Database(object):
         return [one['table_name'] for one in all]
 
     @staticmethod
+    def exists(table):
+        database = local.conn._Connection__config['database']
+        sql = f"select table_name from information_schema.tables WHERE table_schema='{database}' and table_name='{table}'"
+        one = local.conn.fetchone(sql)
+        return True if one is not None else False
+
+    @staticmethod
     def schema(table):
         database = local.conn._Connection__config['database']
         sql = f"select column_name,column_key,data_type,extra,column_comment from information_schema.columns where table_schema='{database}' and table_name='{table}'"
